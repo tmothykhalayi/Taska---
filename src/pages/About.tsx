@@ -1,7 +1,7 @@
 
 import { Header } from '../components/layout/Header'
 import { Card } from '../components/ui/Card'
-import { Heart, Target, Users, Brain, Trophy, Lightbulb, Zap, CheckCircle2 } from 'lucide-react'
+import { Heart, Users, Brain, Trophy, Lightbulb } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Footer } from '../components/layout/Footer'
 
@@ -134,7 +134,7 @@ export function About() {
             </h2>
             <div className="space-y-5 text-slate-700 leading-relaxed text-lg">
               <p className="first-letter:text-5xl first-letter:font-bold first-letter:text-blue-600 first-letter:float-left first-letter:mr-2 first-letter:leading-none">
-                Taska was born in 2024 from a realization: millions of people struggle to manage their tasks not because they lack tools, but because they lack motivation. We saw incredible task management apps that felt cold and mechanical—no connection to human psychology, no celebration of progress, no real sense of community.
+                Taska was born in 2025 from a realization: millions of people struggle to manage their tasks not because they lack tools, but because they lack motivation. We saw incredible task management apps that felt cold and mechanical—no connection to human psychology, no celebration of progress, no real sense of community.
               </p>
               <p>
                 Our founders, passionate about both <span className="font-semibold text-blue-700">productivity and behavioral psychology</span>, created Taska to be different. We believed that task management should be more than just checking boxes—it should be a transformative experience that builds confidence, celebrates growth, and fosters lasting habits.

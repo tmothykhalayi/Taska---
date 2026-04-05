@@ -3,8 +3,9 @@ import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import { Card } from '../components/ui/Card'
 
-import { MailIcon, MessageSquareIcon, ClockIcon, PhoneIcon, MapPinIcon, HeadphonesIcon } from 'lucide-react'
+import { Mail, Send, Clock, Phone, Headphones, Heart } from 'lucide-react'
 import { Header } from '../components/layout/Header'
+import { Footer } from '../components/layout/Footer'
 import { motion } from 'framer-motion'
 
 const fadeInUp = {
@@ -52,7 +53,6 @@ export function Contact() {
     })
   }
   return (
-    <>
     <div className="w-full">
       <Header />
       {/* Hero Section with Background Image */}
@@ -81,10 +81,10 @@ export function Contact() {
           }}
         >
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-            Get in Touch
+            Get in Touch with Taska
           </h1>
           <p className="text-xl text-slate-200 leading-relaxed max-w-2xl mx-auto">
-            Have questions about our vehicles or rentals? Our dedicated team is here to help you 24/7.
+            Have questions about task management, gamification, or your Taska journey? Our team is here to support you and help you succeed.
           </p>
         </motion.div>
 
@@ -105,33 +105,33 @@ export function Contact() {
             <motion.div variants={fadeInUp}>
               <Card hover className="h-full text-center group cursor-pointer">
                 <div className="bg-blue-50 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-100 transition-colors">
-                  <PhoneIcon className="w-8 h-8 text-blue-600" />
+                  <Phone className="w-8 h-8 text-blue-600" />
                 </div>
                 <h3 className="text-xl font-semibold text-slate-900 mb-3">Call Us</h3>
-                <p className="text-slate-600 mb-2">0795978606</p>
-                <p className="text-sm text-slate-500">Available 24/7</p>
+                <p className="text-slate-600 mb-2">+1 (555) 123-4567</p>
+                <p className="text-sm text-slate-500">Available during business hours</p>
               </Card>
             </motion.div>
 
             <motion.div variants={fadeInUp}>
               <Card hover className="h-full text-center group cursor-pointer">
                 <div className="bg-blue-50 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-100 transition-colors">
-                  <MailIcon className="w-8 h-8 text-blue-600" />
+                  <Mail className="w-8 h-8 text-blue-600" />
                 </div>
                 <h3 className="text-xl font-semibold text-slate-900 mb-3">Email Us</h3>
-                <p className="text-slate-600 mb-2">support@autohub.com</p>
-                <p className="text-sm text-slate-500">Response within 2 hours</p>
+                <p className="text-slate-600 mb-2">support@taska.app</p>
+                <p className="text-sm text-slate-500">Response within 24 hours</p>
               </Card>
             </motion.div>
 
             <motion.div variants={fadeInUp}>
               <Card hover className="h-full text-center group cursor-pointer">
                 <div className="bg-blue-50 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-100 transition-colors">
-                  <MessageSquareIcon className="w-8 h-8 text-blue-600" />
+                  <Send className="w-8 h-8 text-blue-600" />
                 </div>
-                <h3 className="text-xl font-semibold text-slate-900 mb-3">Live Chat</h3>
-                <p className="text-slate-600 mb-2">Instant Support</p>
-                <p className="text-sm text-slate-500">Available 24/7</p>
+                <h3 className="text-xl font-semibold text-slate-900 mb-3">In-App Support</h3>
+                <p className="text-slate-600 mb-2">Message Us</p>
+                <p className="text-sm text-slate-500">Direct support in the app</p>
               </Card>
             </motion.div>
           </motion.div>
@@ -150,7 +150,7 @@ export function Contact() {
                 {submitted ? (
                   <div className="text-center py-12">
                     <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <MailIcon className="w-10 h-10 text-blue-600" />
+                      <Mail className="w-10 h-10 text-blue-600" />
                     </div>
                     <h3 className="text-2xl font-bold text-slate-900 mb-3">
                       Message sent successfully!
@@ -229,19 +229,17 @@ export function Contact() {
               className="space-y-6"
             >
               <div>
-                <h2 className="text-3xl font-bold text-slate-900 mb-6">Visit our office</h2>
+                <h2 className="text-3xl font-bold text-slate-900 mb-6">About Taska Support</h2>
                 <Card className="shadow-lg">
                   <div className="bg-blue-50 w-14 h-14 rounded-xl flex items-center justify-center mb-4">
-                    <MapPinIcon className="w-7 h-7 text-blue-600" />
+                    <Heart className="w-7 h-7 text-blue-600" />
                   </div>
-                  <h3 className="text-xl font-semibold text-slate-900 mb-3">Main Office</h3>
+                  <h3 className="text-xl font-semibold text-slate-900 mb-3">We're Here for You</h3>
                   <p className="text-slate-600 mb-4">
-                    123 Uthiru Avenue ooposite shujaa mall<br />
-                     Nairobi<br />
-                    Kenya
+                    Our support team is passionate about helping you master your tasks and achieve your goals. Whether you have a technical question or need motivation, we're here to help.
                   </p>
-                  <a href="#" className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium">
-                    Get directions
+                  <a href="#contact-form" className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium">
+                    Send us a message below
                     <span className="ml-2">→</span>
                   </a>
                 </Card>
@@ -249,27 +247,27 @@ export function Contact() {
 
               <Card className="shadow-lg">
                 <div className="bg-blue-50 w-14 h-14 rounded-xl flex items-center justify-center mb-4">
-                  <ClockIcon className="w-7 h-7 text-blue-600" />
+                  <Clock className="w-7 h-7 text-blue-600" />
                 </div>
-                <h3 className="text-xl font-semibold text-slate-900 mb-4">Business Hours</h3>
+                <h3 className="text-xl font-semibold text-slate-900 mb-4">Response Times</h3>
                 <div className="space-y-2 text-slate-600">
                   <div className="flex justify-between">
-                    <span>Monday - Friday</span>
-                    <span className="font-medium">8:00 AM - 10:00 PM</span>
+                    <span>Email Support</span>
+                    <span className="font-medium">24 hours</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Saturday</span>
-                    <span className="font-medium">9:00 AM - 9:00 PM</span>
+                    <span>In-App Support</span>
+                    <span className="font-medium">Within 48 hours</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Sunday</span>
-                    <span className="font-medium">10:00 AM - 8:00 PM</span>
+                    <span>Community Forum</span>
+                    <span className="font-medium">Instant peer help</span>
                   </div>
                 </div>
                 <div className="mt-4 pt-4 border-t border-slate-200">
                   <p className="text-sm text-slate-600 flex items-center">
-                    <HeadphonesIcon className="w-4 h-4 mr-2 text-blue-600" />
-                    24/7 Emergency Support Available
+                    <Headphones className="w-4 h-4 mr-2 text-blue-600" />
+                    Active community support 24/7
                   </p>
                 </div>
               </Card>
@@ -292,7 +290,7 @@ export function Contact() {
               Frequently Asked Questions
             </h2>
             <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Quick answers to common questions about AutoHub
+              Quick answers to common questions about Taska
             </p>
           </motion.div>
 
@@ -306,12 +304,10 @@ export function Contact() {
             <motion.div variants={fadeInUp}>
               <Card hover className="h-full bg-linear-to-br from-blue-50 to-white border-l-4 border-blue-500">
                 <h3 className="text-lg font-semibold text-blue-900 mb-3">
-                  What documents do I need to rent a car?
+                  How do I earn badges in Taska?
                 </h3>
                 <p className="text-slate-700">
-                  You'll need a valid driver's license, a credit card in your name,
-                  and proof of insurance. International renters may need an
-                  International Driving Permit.
+                  Badges are earned by completing tasks, maintaining streaks, and hitting milestones. Each completed task brings you closer to the next badge. Keep building momentum!
                 </p>
               </Card>
             </motion.div>
@@ -319,12 +315,10 @@ export function Contact() {
             <motion.div variants={fadeInUp}>
               <Card hover className="h-full bg-linear-to-br from-purple-50 to-white border-l-4 border-purple-500">
                 <h3 className="text-lg font-semibold text-purple-900 mb-3">
-                  Can I modify or cancel my reservation?
+                  Can I organize tasks by category?
                 </h3>
                 <p className="text-slate-700">
-                  Yes! You can modify or cancel your reservation up to 24 hours
-                  before your pickup time for a full refund. Changes made within
-                  24 hours may incur fees.
+                  Yes! You can create and customize categories for your tasks like Work, Learning, Health, Personal, and more. Filter your dashboard by category to stay organized.
                 </p>
               </Card>
             </motion.div>
@@ -332,12 +326,10 @@ export function Contact() {
             <motion.div variants={fadeInUp}>
               <Card hover className="h-full bg-linear-to-br from-green-50 to-white border-l-4 border-green-500">
                 <h3 className="text-lg font-semibold text-green-900 mb-3">
-                  What's included in the rental price?
+                  What are the priority levels?
                 </h3>
                 <p className="text-slate-700">
-                  Our rental prices include basic insurance, unlimited mileage,
-                  24/7 roadside assistance, and free cancellation up to 24 hours
-                  before pickup. Additional coverage is available.
+                  Taska uses three priority levels: Low, Medium, and High. Set priorities to focus on what matters most. Color-coded indicators make it easy to see your workload at a glance.
                 </p>
               </Card>
             </motion.div>
@@ -345,12 +337,10 @@ export function Contact() {
             <motion.div variants={fadeInUp}>
               <Card hover className="h-full bg-linear-to-br from-orange-50 to-white border-l-4 border-orange-500">
                 <h3 className="text-lg font-semibold text-orange-900 mb-3">
-                  Do you offer long-term rentals?
+                  How do daily quotes help motivation?
                 </h3>
                 <p className="text-slate-700">
-                  Yes! We offer special rates for weekly and monthly rentals.
-                  Long-term rentals include free vehicle swaps, priority maintenance,
-                  and dedicated customer support.
+                  Every day, Taska provides personalized inspirational quotes designed to keep you motivated and focused. These psychology-backed messages help build consistency and mental resilience.
                 </p>
               </Card>
             </motion.div>
@@ -358,11 +348,10 @@ export function Contact() {
             <motion.div variants={fadeInUp}>
               <Card hover className="h-full bg-linear-to-br from-teal-50 to-white border-l-4 border-teal-500">
                 <h3 className="text-lg font-semibold text-teal-900 mb-3">
-                  What is your fuel policy?
+                  Can I track my productivity over time?
                 </h3>
                 <p className="text-slate-700">
-                  We provide vehicles with a full tank. You can return it full or choose
-                  our prepaid fuel option. Partial returns are charged at a premium rate.
+                  Yes! Taska shows your completion rate, task trends, and progress analytics. Watch your productivity metrics improve as you build consistent habits and complete more tasks.
                 </p>
               </Card>
             </motion.div>
@@ -370,11 +359,10 @@ export function Contact() {
             <motion.div variants={fadeInUp}>
               <Card hover className="h-full bg-linear-to-br from-pink-50 to-white border-l-4 border-pink-500">
                 <h3 className="text-lg font-semibold text-pink-900 mb-3">
-                  Can I add additional drivers?
+                  Is there a community feature?
                 </h3>
                 <p className="text-slate-700">
-                  Yes, additional drivers can be added for a small daily fee. All drivers
-                  must meet our age and license requirements and be present at pickup.
+                  Yes! Connect with thousands of task masters in our community. Share your progress, celebrate wins together, and get motivation from others on their productivity journey.
                 </p>
               </Card>
             </motion.div>
@@ -386,8 +374,8 @@ export function Contact() {
       <section className="relative py-24 px-4 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1600&q=80"
-            alt="Car rental"
+            src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1600&q=80"
+            alt="Productivity"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-linear-to-r from-blue-900/95 to-slate-900/90"></div>
@@ -401,27 +389,27 @@ export function Contact() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Ready to hit the road?
+            Ready to Master Your Tasks?
           </h2>
           <p className="text-xl text-slate-200 mb-10 leading-relaxed">
-            Browse our fleet and book your perfect vehicle today. Great rates and exceptional service await.
+            Join thousands of task masters transforming their lives with Taska. Start your free account today and begin your journey to success.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/vehicles">
+            <a href="/register">
               <button className="bg-orange-500 text-white px-8 py-4 rounded-lg font-medium hover:bg-orange-600 transition-all duration-200 text-lg">
-                View Our Fleet
+                Start Free Today
               </button>
             </a>
             <a href="/locations">
               <button className="bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-lg font-medium hover:bg-white/20 transition-all duration-200 text-lg border border-white/20">
-                Find Locations
+                View Dashboard
               </button>
             </a>
           </div>
         </motion.div>
       </section>
 
+      <Footer />
     </div>
-    </>
   )
 }
