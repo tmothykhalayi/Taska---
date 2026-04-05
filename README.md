@@ -1,73 +1,62 @@
-# React + TypeScript + Vite
+💧 TASKA – The Daily Drip Edition (Frontend)
+Welcome to the frontend of Taska, a mindful task management application designed to bridge the gap between functional productivity and emotional motivation. Built with the MERN stack, this interface focuses on minimalism, consistency, and gamified rewards.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🚀 Tech Stack
+Core: React.js (Vite)
 
-Currently, two official plugins are available:
+Routing: TanStack Router (Standardized navigation and nested layouts)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Styling: Tailwind CSS (Responsive utility-first CSS)
 
-## React Compiler
+State Management: TanStack Query (Server-state synchronization)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Authentication: JWT (Stored via secure HTTP-only cookies/local state)
 
-## Expanding the ESLint configuration
+Icons & UI: Lucide React & Headless UI
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+✨ Key Features
+1. The Drip Dashboard 📊
+A central hub where users can see their Daily Streak and Badge Progress at a glance. It integrates a daily motivational quote to start the day with a positive mindset.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+2. Gamified Habit Building 🏆
+Streaks: Visual indicators that track consecutive days of task completion.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Badges: Unlocked milestones for 1, 3, 7, and 14-day consistency.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Visual Feedback: Monthly heatmaps and progress charts to visualize productivity trends.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+3. Mindful Task Management 📝
+Full CRUD operations (Create, Read, Update, Delete).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Priority labeling (Low, Medium, High).
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Filtering by category and completion status.
+
+4. Adaptive UI 🌙
+Light/Dark Mode: Full support for system preferences or manual toggle.
+
+Responsive: Optimized for students and entrepreneurs on both desktop and mobile devices.
+
+🛠️ Getting Started
+Prerequisites
+Node.js (v18 or higher)
+
+npm or yarn
+
+Installation
+Navigate to the client directory:
+
+Bash
+cd taska-client
+Install dependencies:
+
+Bash
+npm install
+Create a .env file in the root:
+
+🧪 Testing & Validation
+To ensure the UI meets the requirements outlined in the methodology:
+
+Usability Testing: Checking for response times under 1s for task updates.
+
+Input Validation: Frontend checks for non-empty titles and valid future dates.
