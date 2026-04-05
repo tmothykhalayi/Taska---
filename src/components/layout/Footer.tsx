@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
 import {
   ListChecks,
-  Facebook,
-  Twitter,
+  Share2,
+  MessageSquare,
   Mail,
 } from 'lucide-react'
 export function Footer() {
@@ -78,10 +78,10 @@ export function Footer() {
             <h3 className="font-bold text-slate-900 mb-4 text-lg">Connect</h3>
             <div className="flex space-x-4">
               <a href="#" className="bg-slate-100 p-3 rounded-lg text-slate-600 hover:text-white hover:bg-blue-600 transition-all duration-200">
-                <Twitter className="w-5 h-5" />
+                <Share2 className="w-5 h-5" />
               </a>
               <a href="#" className="bg-slate-100 p-3 rounded-lg text-slate-600 hover:text-white hover:bg-blue-600 transition-all duration-200">
-                <Facebook className="w-5 h-5" />
+                <MessageSquare className="w-5 h-5" />
               </a>
               <a href="#" className="bg-slate-100 p-3 rounded-lg text-slate-600 hover:text-white hover:bg-blue-600 transition-all duration-200">
                 <Mail className="w-5 h-5" />

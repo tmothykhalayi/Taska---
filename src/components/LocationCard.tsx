@@ -55,7 +55,7 @@ export function LocationCard({
           </h3>
           <p className="text-sm text-slate-200 flex items-center space-x-2">
             <AwardIcon className="w-4 h-4" />
-            <span>Rental Location • {location.licenseNumber}</span>
+            <span>Coaching Center • {location.licenseNumber}</span>
           </p>
         </div>
       </div>

@@ -1,316 +1,313 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { LocationCard } from '../components/LocationCard'
-import type { LocationProfile } from '../components/LocationCard'
-import { BookingModal } from '../components/BookingModal'
-import { FilterIcon } from 'lucide-react'
+import { Plus, CheckCircle2, Clock, AlertCircle, Trophy } from 'lucide-react'
+import { Button } from '../components/ui/Button'
+import { Card } from '../components/ui/Card'
 import { Header } from '../components/layout/Header'
+import { Footer } from '../components/layout/Footer'
+
+interface Task {
+  id: string
+  title: string
+  description: string
+  priority: 'low' | 'medium' | 'high'
+  status: 'pending' | 'in-progress' | 'completed'
+  dueDate: string
+  category: string
+}
+
 const fadeInUp = {
-  initial: {
-    opacity: 0,
-    y: 20,
-  },
-  animate: {
-    opacity: 1,
-    y: 0,
-  },
-  transition: {
-    duration: 0.5,
-  },
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5 },
 }
+
 const staggerContainer = {
-  animate: {
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
+  animate: { transition: { staggerChildren: 0.1 } },
 }
-// Mock location data
-const locations: LocationProfile[] = [
+
+// Mock tasks data
+const mockTasks: Task[] = [
   {
     id: '1',
-    name: 'Airport Terminal 1',
-    image:
-      'https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=600&q=80',
-    licenseNumber: 'Open 24/7',
-    specializations: [
-      'Airport',
-      '24/7 Service',
-      'Free Shuttle',
-      'Quick Pickup',
-    ],
-    yearsExperience: 0,
-    bio: 'Located inside Terminal 1 arrivals hall. Free shuttle service to parking lot. Fast check-in with priority counter. Perfect for business travelers and tourists.',
-    sessionRate: 0,
-    isAcceptingClients: true,
+    title: 'Complete project proposal',
+    description: 'Finish and submit the Q2 project proposal to stakeholders',
+    priority: 'high',
+    status: 'in-progress',
+    dueDate: '2026-04-10',
+    category: 'Work',
   },
   {
     id: '2',
-    name: 'Airport Terminal 3',
-    image:
-      'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80',
-    licenseNumber: 'Open 24/7',
-    specializations: [
-      'Airport',
-      '24/7 Service',
-      'Free Shuttle',
-      'International',
-    ],
-    yearsExperience: 0,
-    bio: 'International terminal location with multilingual staff. Open around the clock for late arrivals and early departures. Complimentary shuttle to vehicle lot.',
-    sessionRate: 0,
-    isAcceptingClients: true,
+    title: 'Review team presentation',
+    description: 'Go through the slides for the upcoming client meeting',
+    priority: 'medium',
+    status: 'pending',
+    dueDate: '2026-04-08',
+    category: 'Work',
   },
   {
     id: '3',
-    name: 'Downtown Main Street',
-    image:
-      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80',
-    licenseNumber: '8AM - 8PM',
-    specializations: [
-      'Downtown',
-      'Business District',
-      'Validated Parking',
-      'Express Service',
-    ],
-    yearsExperience: 0,
-    bio: 'Prime location in the heart of downtown. Easy access from major hotels and business centers. Validated parking for quick pickup. Extended hours for your convenience.',
-    sessionRate: 0,
-    isAcceptingClients: true,
+    title: 'Finish React course module',
+    description: 'Complete module 5 of the React mastery course',
+    priority: 'medium',
+    status: 'in-progress',
+    dueDate: '2026-04-15',
+    category: 'Learning',
   },
   {
     id: '4',
-    name: 'City Center Plaza',
-    image:
-      'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=600&q=80',
-    licenseNumber: '7AM - 10PM',
-    specializations: [
-      'Downtown',
-      'Shopping District',
-      'Weekend Service',
-      'Corporate Rentals',
-    ],
-    yearsExperience: 0,
-    bio: 'Central location near shopping and entertainment. Specialized corporate rental programs. Weekend and holiday hours available. Premium fleet selection.',
-    sessionRate: 0,
-    isAcceptingClients: true,
+    title: 'Update documentation',
+    description: 'Update API docs with new endpoints',
+    priority: 'low',
+    status: 'pending',
+    dueDate: '2026-04-20',
+    category: 'Work',
   },
   {
     id: '5',
-    name: 'Suburban North Branch',
-    image:
-      'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=600&q=80',
-    licenseNumber: '9AM - 6PM',
-    specializations: [
-      'Suburban',
-      'Family Friendly',
-      'Free Parking',
-      'Long-term Rentals',
-    ],
-    yearsExperience: 0,
-    bio: 'Convenient suburban location with free parking. Specializing in family vehicles and long-term rentals. Friendly staff and personalized service.',
-    sessionRate: 0,
-    isAcceptingClients: true,
-  },
-  {
-    id: '6',
-    name: 'Hotel District Office',
-    image:
-      'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80',
-    licenseNumber: '6AM - 11PM',
-    specializations: [
-      'Hotel Pickup',
-      'Extended Hours',
-      'Delivery Service',
-      'Luxury Fleet',
-    ],
-    yearsExperience: 0,
-    bio: 'Located in the hotel district with delivery service to your hotel. Extended hours to accommodate early checkouts and late arrivals. Premium and luxury vehicles available.',
-    sessionRate: 0,
-    isAcceptingClients: true,
+    title: 'Morning workout',
+    description: '30 min running + stretching routine',
+    priority: 'medium',
+    status: 'completed',
+    dueDate: '2026-04-05',
+    category: 'Health',
   },
 ]
-const allSpecializations = Array.from(
-  new Set(locations.flatMap((t) => t.specializations)),
-).sort()
+
 export function Locations() {
-  const [selectedSpecialization, setSelectedSpecialization] = useState<
-    string | null
-  >(null)
-  const [selectedLocation, setSelectedLocation] =
-    useState<LocationProfile | null>(null)
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false)
-  const filteredLocations = selectedSpecialization
-    ? locations.filter((t) =>
-        t.specializations.includes(selectedSpecialization),
-      )
-    : locations
-  const handleBookSession = (location: LocationProfile) => {
-    setSelectedLocation(location)
-    setIsBookingModalOpen(true)
+  const [tasks] = useState<Task[]>(mockTasks)
+  const [filter, setFilter] = useState<string>('all')
+
+  const filteredTasks =
+    filter === 'all'
+      ? tasks
+      : tasks.filter((t) => {
+          if (filter === 'completed') return t.status === 'completed'
+          if (filter === 'pending') return t.status === 'pending'
+          if (filter === 'in-progress') return t.status === 'in-progress'
+          return true
+        })
+
+  const completedCount = tasks.filter((t) => t.status === 'completed').length
+  const totalCount = tasks.length
+  const completionRate = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return 'bg-green-50 border-green-200'
+      case 'in-progress':
+        return 'bg-blue-50 border-blue-200'
+      default:
+        return 'bg-slate-50 border-slate-200'
+    }
   }
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'high':
+        return 'text-red-600 bg-red-50'
+      case 'medium':
+        return 'text-orange-600 bg-orange-50'
+      default:
+        return 'text-green-600 bg-green-50'
+    }
+  }
+
   return (
     <div className="w-full">
       <Header />
-      {/* Hero Section */}
-      <section className="relative min-h-[800px] flex items-center justify-center px-4 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=80"
-            alt="City skyline"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-linear-to-br from-slate-900/90 via-slate-900/80 to-blue-900/70"></div>
-        </div>
 
-        <motion.div
-          className="relative z-10 max-w-4xl mx-auto text-center py-20"
-          initial={{
-            opacity: 0,
-            y: 20,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            duration: 0.6,
-          }}
-        >
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-            Our Rental Locations
-          </h1>
-          <p className="text-xl text-slate-200 leading-relaxed max-w-2xl mx-auto">
-            Find a convenient location near you. We have offices at major airports,
-            downtown areas, and popular destinations.
-          </p>
-        </motion.div>
-
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-linear-to-t from-white to-transparent z-10"></div>
-      </section>
-
-      {/* Filters Section */}
-      <section className="py-8 px-4 bg-white border-b border-slate-200 sticky top-16 z-30">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center space-x-3 mb-4">
-            <FilterIcon className="w-5 h-5 text-slate-600" />
-            <h3 className="font-semibold text-slate-900">
-              Filter by Location Type
-            </h3>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setSelectedSpecialization(null)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${selectedSpecialization === null ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}
-            >
-              All Locations
-            </button>
-            {allSpecializations.map((spec) => (
-              <button
-                key={spec}
-                onClick={() => setSelectedSpecialization(spec)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${selectedSpecialization === spec ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}
-              >
-                {spec}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Locations Grid */}
-      <section className="py-20 px-4 bg-slate-50">
+      {/* Hero/Stats Section */}
+      <section className="bg-gradient-to-br from-blue-600 to-blue-700 text-white py-12 px-4">
         <div className="max-w-7xl mx-auto">
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            className="space-y-6"
             initial="initial"
             animate="animate"
             variants={staggerContainer}
           >
-            {filteredLocations.map((location) => (
-              <motion.div key={location.id} variants={fadeInUp}>
-                <LocationCard
-                  location={location}
-                  onBookSession={handleBookSession}
-                />
+            <motion.div variants={fadeInUp}>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">Your Task Dashboard</h1>
+              <p className="text-xl text-blue-100">Stay organized and accomplish your goals</p>
+            </motion.div>
+
+            {/* Stats */}
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-4 gap-4"
+              variants={staggerContainer}
+            >
+              <motion.div
+                variants={fadeInUp}
+                className="bg-white/10 backdrop-blur-sm rounded-lg p-4"
+              >
+                <div className="flex items-center space-x-3">
+                  <Trophy className="w-8 h-8" />
+                  <div>
+                    <p className="text-sm text-blue-100">Completed</p>
+                    <p className="text-2xl font-bold">{completedCount}</p>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                variants={fadeInUp}
+                className="bg-white/10 backdrop-blur-sm rounded-lg p-4"
+              >
+                <div className="flex items-center space-x-3">
+                  <Clock className="w-8 h-8" />
+                  <div>
+                    <p className="text-sm text-blue-100">In Progress</p>
+                    <p className="text-2xl font-bold">
+                      {tasks.filter((t) => t.status === 'in-progress').length}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                variants={fadeInUp}
+                className="bg-white/10 backdrop-blur-sm rounded-lg p-4"
+              >
+                <div className="flex items-center space-x-3">
+                  <AlertCircle className="w-8 h-8" />
+                  <div>
+                    <p className="text-sm text-blue-100">Pending</p>
+                    <p className="text-2xl font-bold">
+                      {tasks.filter((t) => t.status === 'pending').length}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                variants={fadeInUp}
+                className="bg-white/10 backdrop-blur-sm rounded-lg p-4"
+              >
+                <div className="flex items-center space-x-3">
+                  <CheckCircle2 className="w-8 h-8" />
+                  <div>
+                    <p className="text-sm text-blue-100">Completion</p>
+                    <p className="text-2xl font-bold">{completionRate}%</p>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Tasks Section */}
+      <section className="py-12 px-4 bg-slate-50">
+        <div className="max-w-7xl mx-auto">
+          {/* Controls */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div>
+              <h2 className="text-3xl font-bold text-slate-900 mb-2">All Tasks</h2>
+              <p className="text-slate-600">Manage and track your tasks</p>
+            </div>
+            <Button
+              variant="secondary"
+              size="lg"
+              className="flex items-center gap-2"
+            >
+              <Plus className="w-5 h-5" />
+              Add New Task
+            </Button>
+          </div>
+
+          {/* Filter Buttons */}
+          <div className="flex flex-wrap gap-2 mb-8">
+            {['all', 'pending', 'in-progress', 'completed'].map((status) => (
+              <button
+                key={status}
+                onClick={() => setFilter(status)}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  filter === status
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                }`}
+              >
+                {status.charAt(0).toUpperCase() +
+                  status.slice(1).replace('-', ' ')}
+              </button>
+            ))}
+          </div>
+
+          {/* Tasks Grid */}
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            initial="initial"
+            animate="animate"
+            variants={staggerContainer}
+          >
+            {filteredTasks.map((task) => (
+              <motion.div key={task.id} variants={fadeInUp}>
+                <Card
+                  hover
+                  className={`h-full border-l-4 
+                  ${
+                    task.status === 'completed'
+                      ? 'border-l-green-500'
+                      : task.status === 'in-progress'
+                        ? 'border-l-blue-500'
+                        : 'border-l-slate-400'
+                  }
+                  ${getStatusColor(task.status)}`}
+                >
+                  {/* Task Header */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-slate-900 mb-1">
+                        {task.title}
+                      </h3>
+                      <p className="text-sm text-slate-600">{task.description}</p>
+                    </div>
+                    {task.status === 'completed' && (
+                      <div className="ml-2">
+                        <CheckCircle2 className="w-6 h-6 text-green-600" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Meta Info */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span
+                      className={`text-xs font-medium px-2 py-1 rounded-full ${getPriorityColor(task.priority)}`}
+                    >
+                      {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)} Priority
+                    </span>
+                    <span className="text-xs font-medium px-2 py-1 rounded-full bg-slate-200 text-slate-700">
+                      {task.category}
+                    </span>
+                  </div>
+
+                  {/* Due Date */}
+                  <div className="flex items-center space-x-2 text-sm text-slate-500">
+                    <Clock className="w-4 h-4" />
+                    <span>{task.dueDate}</span>
+                  </div>
+                </Card>
               </motion.div>
             ))}
           </motion.div>
 
-          {filteredLocations.length === 0 && (
+          {filteredTasks.length === 0 && (
             <motion.div
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              className="text-center py-20"
+              className="text-center py-16"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
             >
-              <p className="text-xl text-slate-600 mb-4">
-                No locations found with this filter.
-              </p>
-              <button
-                onClick={() => setSelectedSpecialization(null)}
-                className="text-blue-600 hover:text-blue-700 font-medium"
-              >
-                View all locations
-              </button>
+              <CheckCircle2 className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+              <p className="text-xl text-slate-600 mb-4">No tasks in this category</p>
+              <Button variant="secondary">Create Your First Task</Button>
             </motion.div>
           )}
         </div>
       </section>
 
-      {/* Info Section */}
-      <section className="py-20 px-4 bg-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-slate-900 mb-6">
-            How to Rent
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-            <div>
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-blue-600">1</span>
-              </div>
-              <h3 className="font-semibold text-slate-900 mb-2">
-                Choose Your Location
-              </h3>
-              <p className="text-sm text-slate-600">
-                Select a pickup location convenient to you - airport, downtown, or delivery.
-              </p>
-            </div>
-            <div>
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-blue-600">2</span>
-              </div>
-              <h3 className="font-semibold text-slate-900 mb-2">
-                Select Your Vehicle
-              </h3>
-              <p className="text-sm text-slate-600">
-                Browse available vehicles and choose the perfect car for your needs.
-              </p>
-            </div>
-            <div>
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-blue-600">3</span>
-              </div>
-              <h3 className="font-semibold text-slate-900 mb-2">
-                Pick Up & Drive
-              </h3>
-              <p className="text-sm text-slate-600">
-                Complete your booking online and pick up your vehicle at your chosen time.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Booking Modal */}
-      <BookingModal
-        isOpen={isBookingModalOpen}
-        onClose={() => setIsBookingModalOpen(false)}
-        location={selectedLocation}
-      />
+      <Footer />
     </div>
   )
 }

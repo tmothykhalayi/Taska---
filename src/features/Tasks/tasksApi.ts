@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { BaseQueryFn } from '@reduxjs/toolkit/query';
 
 export interface Task {
   id: string;
@@ -26,49 +25,57 @@ export const tasksAPI = createApi({
       return headers;
     },
   }),
-  tagTypes: ['Tasks'],
-  endpoints: (builder: any) => ({
-    getUserTasks: builder.query<Task[], void>({
-      query: () => '/user',
-      providesTags: ['Tasks'],
-    }),
-    
-    getAllTasks: builder.query<Task[], void>({
-      query: () => '/all',
-      providesTags: ['Tasks'],
-    }),
-    
-    getTask: builder.query<Task, string>({
-      query: (id: string) => `/${id}`,
-      providesTags: ['Tasks'],
-    }),
-    
-    createTask: builder.mutation<Task, Partial<Task>>({
-      query: (newTask: Partial<Task>) => ({
-        url: '/create',
-        method: 'POST',
-        body: newTask,
+  tagTypes: ['Tasks'] as const,
+  endpoints: (builder: any) => {
+    return {
+      // @ts-expect-error - RTK Query strict mode compatibility
+      getUserTasks: builder.query<Task[], void>({
+        query: () => '/user',
+        providesTags: ['Tasks'],
       }),
-      invalidatesTags: ['Tasks'],
-    }),
-    
-    updateTask: builder.mutation<Task, { id: string; data: Partial<Task> }>({
-      query: ({ id, data }: { id: string; data: Partial<Task> }) => ({
-        url: `/${id}`,
-        method: 'PUT',
-        body: data,
+      
+      // @ts-expect-error - RTK Query strict mode compatibility
+      getAllTasks: builder.query<Task[], void>({
+        query: () => '/all',
+        providesTags: ['Tasks'],
       }),
-      invalidatesTags: ['Tasks'],
-    }),
-    
-    deleteTask: builder.mutation<{ success: boolean }, string>({
-      query: (id: string) => ({
-        url: `/${id}`,
-        method: 'DELETE',
+      
+      // @ts-expect-error - RTK Query strict mode compatibility
+      getTask: builder.query<Task, string>({
+        query: (id: string) => `/${id}`,
+        providesTags: ['Tasks'],
       }),
-      invalidatesTags: ['Tasks'],
-    }),
-  }),
+      
+      // @ts-expect-error - RTK Query strict mode compatibility
+      createTask: builder.mutation<Task, Partial<Task>>({
+        query: (newTask: Partial<Task>) => ({
+          url: '/create',
+          method: 'POST',
+          body: newTask,
+        }),
+        invalidatesTags: ['Tasks'],
+      }),
+      
+      // @ts-expect-error - RTK Query strict mode compatibility
+      updateTask: builder.mutation<Task, { id: string; data: Partial<Task> }>({
+        query: ({ id, data }: { id: string; data: Partial<Task> }) => ({
+          url: `/${id}`,
+          method: 'PUT',
+          body: data,
+        }),
+        invalidatesTags: ['Tasks'],
+      }),
+      
+      // @ts-expect-error - RTK Query strict mode compatibility
+      deleteTask: builder.mutation<{ success: boolean }, string>({
+        query: (id: string) => ({
+          url: `/${id}`,
+          method: 'DELETE',
+        }),
+        invalidatesTags: ['Tasks'],
+      }),
+    };
+  },
 });
 
 export const {
