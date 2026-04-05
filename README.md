@@ -4,15 +4,15 @@ Welcome to the frontend of Taska, a mindful task management application designed
 🚀 Tech Stack
 Core: React.js (Vite)
 
-Routing: TanStack Router (Standardized navigation and nested layouts)
+Routing: React Router (Client-side navigation)
 
 Styling: Tailwind CSS (Responsive utility-first CSS)
 
-State Management: TanStack Query (Server-state synchronization)
+State Management: Redux Toolkit & RTK Query (Server-state synchronization)
 
 Authentication: JWT (Stored via secure HTTP-only cookies/local state)
 
-Icons & UI: Lucide React & Headless UI
+Icons & UI: Lucide React
 
 ✨ Key Features
 1. The Drip Dashboard 📊
@@ -41,18 +41,54 @@ Responsive: Optimized for students and entrepreneurs on both desktop and mobile 
 Prerequisites
 Node.js (v18 or higher)
 
-npm or yarn
+npm or pnpm
 
 Installation
-Navigate to the client directory:
-
-Bash
-cd taska-client
 Install dependencies:
 
-Bash
+```bash
 npm install
+```
+
 Create a .env file in the root:
+
+```
+VITE_API_URL=http://localhost:8000
+VITE_QUOTE_API=https://api.quotable.io/random
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Build for production:
+
+```bash
+npm run build
+```
+
+📁 Project Structure
+```
+src/
+├── assets/              # Images, logos, and global assets
+├── components/          # Reusable UI components
+│   ├── layout/         # Layout wrappers (Header, Footer, Sidebar)
+│   ├── ui/             # Atomic UI components (Button, Card, Input)
+│   └── data/           # Component data/constants
+├── Dashboards/          # Dashboard pages (Customer, Admin)
+│   ├── Customer/       # Customer task & wellness dashboards
+│   └── Admin/          # Admin monitoring dashboards
+├── features/            # Redux slices & RTK Query APIs
+│   ├── Auth/           # Authentication logic (Login, Registration)
+│   ├── Tasks/          # Task API calls (CRUD operations)
+│   └── Users/          # User slice & API
+├── pages/               # Page components (Landing, Login, etc)
+├── types/               # TypeScript type definitions
+├── app/                 # Redux store configuration
+└── index.css            # Global styles with Tailwind CSS
+```
 
 🧪 Testing & Validation
 To ensure the UI meets the requirements outlined in the methodology:

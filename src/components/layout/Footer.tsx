@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom'
 import {
-  CarIcon,
-  FacebookIcon,
-  TwitterIcon,
-  MailIcon,
+  ListChecks,
+  Facebook,
+  Twitter,
+  Mail,
 } from 'lucide-react'
 export function Footer() {
   return (
@@ -14,12 +14,12 @@ export function Footer() {
           <div className="col-span-1">
             <div className="flex items-center space-x-2 mb-4">
               <div className="bg-blue-600 p-2 rounded-lg">
-                <CarIcon className="w-6 h-6 text-white" />
+                <ListChecks className="w-6 h-6 text-white" />
               </div>
-              <span className="text-xl font-bold text-slate-900">AutoHub</span>
+              <span className="text-xl font-bold text-slate-900">Taska</span>
             </div>
             <p className="text-sm text-slate-600 leading-relaxed">
-              Your trusted partner for convenient and affordable car rentals.
+              Your daily task companion for mindful productivity and habit building.
             </p>
           </div>
 
@@ -29,11 +29,11 @@ export function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  to="/vehicles"
+                  to="/about"
                   className="text-sm text-slate-600 hover:text-blue-600 transition-colors flex items-center group"
                 >
                   <span className="w-0 group-hover:w-2 h-0.5 bg-blue-600 mr-0 group-hover:mr-2 transition-all duration-200"></span>
-                  Vehicles
+                  Features
                 </Link>
               </li>
               <li>
@@ -78,13 +78,13 @@ export function Footer() {
             <h3 className="font-bold text-slate-900 mb-4 text-lg">Connect</h3>
             <div className="flex space-x-4">
               <a href="#" className="bg-slate-100 p-3 rounded-lg text-slate-600 hover:text-white hover:bg-blue-600 transition-all duration-200">
-                <TwitterIcon className="w-5 h-5" />
+                <Twitter className="w-5 h-5" />
               </a>
               <a href="#" className="bg-slate-100 p-3 rounded-lg text-slate-600 hover:text-white hover:bg-blue-600 transition-all duration-200">
-                <FacebookIcon className="w-5 h-5" />
+                <Facebook className="w-5 h-5" />
               </a>
               <a href="#" className="bg-slate-100 p-3 rounded-lg text-slate-600 hover:text-white hover:bg-blue-600 transition-all duration-200">
-                <MailIcon className="w-5 h-5" />
+                <Mail className="w-5 h-5" />
               </a>
             </div>
           </div>

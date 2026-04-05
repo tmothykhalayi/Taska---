@@ -3,8 +3,7 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 import { loginApi } from "../features/Auth/LoginApi";
 import { registrationAPI } from "../features/Auth/RegistrationAPI";
 import { usersAPI } from "../features/Users/usersApi";
-import { bookingsAPI } from "../features/Bookings/bookingsApi";
-import { vehiclesAPI } from "../features/Vehicles/vehiclesApi";
+import { tasksAPI } from "../features/Tasks/tasksApi";
 
 
 // Import slices
@@ -17,8 +16,7 @@ const store = configureStore({
     [loginApi.reducerPath]: loginApi.reducer,
     [registrationAPI.reducerPath]: registrationAPI.reducer,
     [usersAPI.reducerPath]: usersAPI.reducer,
-    [bookingsAPI.reducerPath]: bookingsAPI.reducer,
-    [vehiclesAPI.reducerPath]: vehiclesAPI.reducer,
+    [tasksAPI.reducerPath]: tasksAPI.reducer,
     
     // State slices
     userActions: userActionsReducer,
@@ -29,8 +27,7 @@ const store = configureStore({
       usersAPI.middleware,
       loginApi.middleware,
       registrationAPI.middleware,
-      bookingsAPI.middleware,
-      vehiclesAPI.middleware,
+      tasksAPI.middleware,
     ),
 });
 

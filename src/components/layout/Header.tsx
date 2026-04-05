@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Button } from '../ui/Button'
-import { CarIcon, MenuIcon, XIcon } from 'lucide-react'
+import { CheckCheck, Menu, X } from 'lucide-react'
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const location = useLocation()
@@ -13,10 +13,6 @@ export function Header() {
     {
       path: '/about',
       label: 'About',
-    },
-    {
-      path: '/vehicles',
-      label: 'Vehicles',
     },
     {
       path: '/locations',
@@ -34,8 +30,8 @@ export function Header() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
-            <CarIcon className="w-8 h-8 text-blue-600 group-hover:text-blue-700 transition-colors" />
-            <span className="text-xl font-bold text-slate-900">AutoHub</span>
+            <CheckCheck className="w-8 h-8 text-blue-600 group-hover:text-blue-700 transition-colors" />
+            <span className="text-xl font-bold text-slate-900">Taska</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -55,12 +51,12 @@ export function Header() {
           <div className="hidden md:flex items-center space-x-4">
             <Link to="/login">
               <Button variant="ghost" size="sm">
-                Book Now
+                Login
               </Button>
             </Link>
             <Link to="/register">
               <Button variant="primary" size="sm">
-                Register
+                Get Started
               </Button>
             </Link>
           </div>
@@ -71,9 +67,9 @@ export function Header() {
             className="md:hidden p-2 text-slate-600 hover:text-slate-900"
           >
             {mobileMenuOpen ? (
-              <XIcon className="w-6 h-6" />
+              <X className="w-6 h-6" />
             ) : (
-              <MenuIcon className="w-6 h-6" />
+              <Menu className="w-6 h-6" />
             )}
           </button>
         </div>
@@ -95,12 +91,12 @@ export function Header() {
               <div className="flex flex-col space-y-2 pt-4 border-t border-slate-200">
                 <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
                   <Button variant="ghost" size="md" className="w-full">
-                    Book Now
+                    Login
                   </Button>
                 </Link>
                 <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
                   <Button variant="primary" size="md" className="w-full">
-                    Register
+                    Get Started
                   </Button>
                 </Link>
               </div>

@@ -1,10 +1,9 @@
 import { motion } from "framer-motion";
 import {
-  Car,
+  CheckCircle,
   Users,
-  DollarSign,
   TrendingUp,
-  Calendar,
+  Clock,
   Settings,
   BarChart3,
   FileText,
@@ -15,69 +14,67 @@ import {
 import { useState } from "react";
 import { Card } from "../../components/ui/Card";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
-import { useGetAllBookingsQuery } from "../../features/Bookings/bookingsApi";
-import { useGetVehiclesQuery } from "../../features/Vehicles/vehiclesApi";
+import { useGetAllTasksQuery } from "../../features/Tasks/tasksApi";
 import { useGetUsersQuery } from "../../features/Users/usersApi";
 
 export const AdminDashboard = () => {
-  const { data: bookings, isLoading: bookingsLoading } = useGetAllBookingsQuery();
-  const { data: vehicles, isLoading: vehiclesLoading } = useGetVehiclesQuery();
+  const { data: tasks, isLoading: tasksLoading } = useGetAllTasksQuery();
   const { data: users, isLoading: usersLoading } = useGetUsersQuery();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Calculate stats
-  const totalRevenue = bookings?.reduce((sum, b) => sum + (b.amount || b.price || 0), 0) || 0;
-  const activeRentals = bookings?.filter(b => b.status === 'active' || b.status === 'confirmed').length || 0;
-  const totalCustomers = users?.length || 0;
-  const availableVehicles = vehicles?.filter(v => v.status === 'available').length || 0;
+  const completedTasks = tasks?.filter((t: any) => t.status === 'completed').length || 0;
+  const activeTasks = tasks?.filter((t: any) => t.status === 'in-progress' || t.status === 'pending').length || 0;
+  const totalUsers = users?.length || 0;
+  const totalTasks = tasks?.length || 0;
 
-  const recentBookings = bookings?.slice(0, 5) || [];
-  const vehicleStatus = vehicles?.slice(0, 5) || [];
+  const recentTasks = tasks?.slice(0, 5) || [];
+  const activeUsers = users?.slice(0, 5) || [];
 
-  const isLoading = bookingsLoading || vehiclesLoading || usersLoading;
+  const isLoading = tasksLoading || usersLoading;
 
   const stats = [
     {
-      title: "Total Revenue",
-      value: `$${totalRevenue.toLocaleString()}`,
-      change: "+12.5%",
-      icon: DollarSign,
+      title: "Total Tasks",
+      value: totalTasks.toString(),
+      change: "+12",
+      icon: CheckCircle,
       color: "from-green-500 to-green-600",
     },
     {
-      title: "Active Rentals",
-      value: activeRentals.toString(),
+      title: "Active Tasks",
+      value: activeTasks.toString(),
       change: "+5",
-      icon: Car,
+      icon: Clock,
       color: "from-blue-500 to-blue-600",
     },
     {
-      title: "Total Customers",
-      value: totalCustomers.toString(),
+      title: "Total Users",
+      value: totalUsers.toString(),
       change: "+18",
       icon: Users,
       color: "from-purple-500 to-purple-600",
     },
     {
-      title: "Available Vehicles",
-      value: availableVehicles.toString(),
-      change: "-3",
-      icon: Calendar,
+      title: "Completion Rate",
+      value: totalTasks > 0 ? `${Math.round((completedTasks / totalTasks) * 100)}%` : '0%',
+      change: "+2%",
+      icon: TrendingUp,
       color: "from-orange-500 to-orange-600",
     },
   ];
 
   const quickActions = [
     {
-      icon: Car,
-      title: "Add Vehicle",
-      description: "Register new vehicle",
+      icon: CheckCircle,
+      title: "View Tasks",
+      description: "Browse all tasks",
       color: "from-blue-500 to-blue-600",
     },
     {
       icon: Users,
       title: "Manage Users",
-      description: "View customer list",
+      description: "View user list",
       color: "from-purple-500 to-purple-600",
     },
     {
@@ -96,15 +93,12 @@ export const AdminDashboard = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'available':
-      case 'confirmed':
       case 'completed':
         return 'bg-green-100 text-green-700';
-      case 'rented':
+      case 'in-progress':
+        return 'bg-blue-100 text-blue-700';
       case 'pending':
         return 'bg-amber-100 text-amber-700';
-      case 'maintenance':
-        return 'bg-red-100 text-red-700';
       default:
         return 'bg-slate-100 text-slate-700';
     }
@@ -214,16 +208,16 @@ export const AdminDashboard = () => {
 
               <Card>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-slate-800">Booking Trends</h3>
-                  <TrendingUp className="w-5 h-5 text-slate-600" />
+                  <h3 className="text-lg font-bold text-slate-800">Task Overview</h3>
+                  <BarChart3 className="w-5 h-5 text-slate-600" />
                 </div>
                 <div className="h-64 flex items-center justify-center bg-slate-50 rounded-lg">
-                  <p className="text-slate-500">Chart placeholder - Booking analytics</p>
+                  <p className="text-slate-500">Chart placeholder - Task trend</p>
                 </div>
               </Card>
             </motion.div>
 
-            {/* Recent Bookings */}
+            {/* Recent Tasks */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -232,7 +226,7 @@ export const AdminDashboard = () => {
             >
               <Card>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-slate-800">Recent Bookings</h3>
+                  <h3 className="text-lg font-bold text-slate-800">Recent Tasks</h3>
                   <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
                     View All
                   </button>
@@ -241,23 +235,21 @@ export const AdminDashboard = () => {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-slate-200">
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Customer</th>
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Vehicle</th>
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Task Title</th>
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Priority</th>
                         <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Date</th>
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Amount</th>
                         <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Status</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {recentBookings.map((booking) => (
-                        <tr key={booking.id} className="border-b border-slate-100 hover:bg-slate-50">
-                          <td className="py-3 px-4 text-sm text-slate-800">{booking.customer}</td>
-                          <td className="py-3 px-4 text-sm text-slate-800">{booking.vehicle}</td>
-                          <td className="py-3 px-4 text-sm text-slate-600">{booking.date}</td>
-                          <td className="py-3 px-4 text-sm font-semibold text-slate-800">${booking.amount}</td>
+                      {tasks?.slice(0, 5).map((task: any) => (
+                        <tr key={task.id} className="border-b border-slate-100 hover:bg-slate-50">
+                          <td className="py-3 px-4 text-sm text-slate-800">{task.title}</td>
+                          <td className="py-3 px-4 text-sm text-slate-800">{task.priority || 'Medium'}</td>
+                          <td className="py-3 px-4 text-sm text-slate-600">{task.createdAt || 'N/A'}</td>
                           <td className="py-3 px-4">
-                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(booking.status)}`}>
-                              {booking.status}
+                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(task.status)}`}>
+                              {task.status}
                             </span>
                           </td>
                         </tr>
@@ -268,49 +260,7 @@ export const AdminDashboard = () => {
               </Card>
             </motion.div>
 
-            {/* Vehicle Status */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="mb-8"
-            >
-              <Card>
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-slate-800">Fleet Status</h3>
-                  <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-                    Manage Fleet
-                  </button>
-                </div>
-                <div className="space-y-3">
-                  {vehicleStatus.map((vehicle) => (
-                    <div
-                      key={vehicle.id}
-                      className="flex items-center justify-between p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
-                    >
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-linear-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                          <Car className="w-6 h-6 text-white" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-slate-800">{vehicle.name}</p>
-                          <p className="text-sm text-slate-600">{vehicle.model} • {vehicle.location}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-6">
-                        <div className="text-right">
-                          <p className="text-sm text-slate-600">Revenue (MTD)</p>
-                          <p className="font-semibold text-slate-800">${vehicle.revenue}</p>
-                        </div>
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(vehicle.status)}`}>
-                          {vehicle.status}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </motion.div>
+
 
             {/* Quick Actions */}
             <motion.div

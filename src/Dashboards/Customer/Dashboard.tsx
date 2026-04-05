@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import {
-  Car,
+  CheckCircle,
   Calendar,
-  CreditCard,
+  Zap,
   MapPin,
   Star,
   Menu,
@@ -15,45 +15,45 @@ import { useState } from "react";
 import { Header } from "../../components/layout/Header";
 import { Card } from "../../components/ui/Card";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
-import { useGetCustomerBookingsQuery } from "../../features/Bookings/bookingsApi";
+import { useGetUserTasksQuery } from "../../features/Tasks/tasksApi";
 
 export const Dashboard = () => {
-  const { data: bookings, isLoading, error } = useGetCustomerBookingsQuery();
+  const { data: tasks, isLoading, error } = useGetUserTasksQuery();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const quickActions = [
     {
-      icon: Search,
-      title: "Browse Vehicles",
-      description: "Find your perfect ride",
+      icon: Plus,
+      title: "Create Task",
+      description: "Add a new task",
       color: "from-blue-500 to-blue-600",
-      href: "/resources",
+      href: "#",
     },
     {
       icon: Calendar,
-      title: "My Bookings",
-      description: "View rental history",
+      title: "My Tasks",
+      description: "View all tasks",
       color: "from-purple-500 to-purple-600",
       href: "#",
     },
     {
       icon: MapPin,
-      title: "Locations",
-      description: "Find rental locations",
+      title: "Daily Check-in",
+      description: "Complete wellness check",
       color: "from-green-500 to-green-600",
-      href: "/therapists",
+      href: "#",
     },
     {
-      icon: CreditCard,
-      title: "Payments",
-      description: "Manage payment methods",
+      icon: Zap,
+      title: "Streak Progress",
+      description: "Track your streaks",
       color: "from-orange-500 to-orange-600",
       href: "#",
     },
     {
       icon: Star,
-      title: "Rewards",
-      description: "View loyalty points",
+      title: "Badges",
+      description: "View achievements",
       color: "from-teal-500 to-teal-600",
       href: "#",
     },
@@ -66,12 +66,12 @@ export const Dashboard = () => {
     },
   ];
 
-  // Filter bookings by status
-  const activeBookings = bookings?.filter(b => b.status === 'active') || [];
-  const upcomingBookings = bookings?.filter(b => b.status === 'upcoming') || [];
+  // Filter tasks by status
+  const activeTasks = tasks?.filter((t: any) => t.status === 'in-progress') || [];
+  const completedTasks = tasks?.filter((t: any) => t.status === 'completed') || [];
   
   // Calculate stats
-  const rewardsPoints = 1250; // This could come from user profile API
+  const dailyStreak = 7; // This could come from user profile API
 
   if (isLoading) {
     return (
@@ -158,7 +158,7 @@ export const Dashboard = () => {
                     <p className="text-blue-100 text-sm mb-1">Active Rentals</p>
                     <p className="text-3xl font-bold">1</p>
                   </div>
-                  <Car className="w-12 h-12 text-blue-200" />
+                  <CheckCircle className="w-12 h-12 text-blue-200" />
                 </div>
               </Card>
 
@@ -176,132 +176,16 @@ export const Dashboard = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-green-100 text-sm mb-1">Rewards Points</p>
-                    <p className="text-3xl font-bold">{rewardsPoints}</p>
+                    <p className="text-3xl font-bold">{activeTasks.length * 10}</p>
                   </div>
                   <Star className="w-12 h-12 text-green-200" />
                 </div>
               </Card>
             </motion.div>
 
-            {/* Active Bookings */}
-            {activeBookings.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="mb-8"
-              >
-                <h2 className="text-xl font-bold text-slate-800 mb-4">Active Rentals</h2>
-                <div className="grid gap-4">
-                  {activeBookings.map((booking) => (
-                    <Card key={booking.id} className="hover:shadow-lg transition-shadow">
-                      <div className="flex flex-col md:flex-row gap-4">
-                        <img
-                          src={booking.imageUrl}
-                          alt={booking.vehicle}
-                          className="w-full md:w-48 h-32 object-cover rounded-lg"
-                        />
-                        <div className="flex-1">
-                          <div className="flex items-start justify-between mb-2">
-                            <div>
-                              <h3 className="text-lg font-bold text-slate-800">{booking.vehicle}</h3>
-                              <p className="text-sm text-slate-600 flex items-center mt-1">
-                                <MapPin className="w-4 h-4 mr-1" />
-                                {booking.location}
-                              </p>
-                            </div>
-                            <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
-                              Active
-                            </span>
-                          </div>
-                          <div className="grid grid-cols-2 gap-4 mt-4">
-                            <div>
-                              <p className="text-xs text-slate-500">Pickup</p>
-                              <p className="text-sm font-semibold text-slate-800">{booking.pickupDate}</p>
-                            </div>
-                            <div>
-                              <p className="text-xs text-slate-500">Return</p>
-                              <p className="text-sm font-semibold text-slate-800">{booking.returnDate}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between mt-4">
-                            <p className="text-lg font-bold text-blue-600">${booking.price}</p>
-                            <div className="flex space-x-2">
-                              <button className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm transition-colors">
-                                View Details
-                              </button>
-                              <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors">
-                                Extend Rental
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              </motion.div>
-            )}
 
-            {/* Upcoming Bookings */}
-            {upcomingBookings.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="mb-8"
-              >
-                <h2 className="text-xl font-bold text-slate-800 mb-4">Upcoming Rentals</h2>
-                <div className="grid gap-4">
-                  {upcomingBookings.map((booking) => (
-                    <Card key={booking.id} className="hover:shadow-lg transition-shadow">
-                      <div className="flex flex-col md:flex-row gap-4">
-                        <img
-                          src={booking.imageUrl}
-                          alt={booking.vehicle}
-                          className="w-full md:w-48 h-32 object-cover rounded-lg"
-                        />
-                        <div className="flex-1">
-                          <div className="flex items-start justify-between mb-2">
-                            <div>
-                              <h3 className="text-lg font-bold text-slate-800">{booking.vehicle}</h3>
-                              <p className="text-sm text-slate-600 flex items-center mt-1">
-                                <MapPin className="w-4 h-4 mr-1" />
-                                {booking.location}
-                              </p>
-                            </div>
-                            <span className="px-3 py-1 bg-amber-100 text-amber-700 text-xs font-semibold rounded-full">
-                              Upcoming
-                            </span>
-                          </div>
-                          <div className="grid grid-cols-2 gap-4 mt-4">
-                            <div>
-                              <p className="text-xs text-slate-500">Pickup</p>
-                              <p className="text-sm font-semibold text-slate-800">{booking.pickupDate}</p>
-                            </div>
-                            <div>
-                              <p className="text-xs text-slate-500">Return</p>
-                              <p className="text-sm font-semibold text-slate-800">{booking.returnDate}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between mt-4">
-                            <p className="text-lg font-bold text-blue-600">${booking.price}</p>
-                            <div className="flex space-x-2">
-                              <button className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm transition-colors">
-                                Modify
-                              </button>
-                              <button className="px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-sm transition-colors">
-                                Cancel
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              </motion.div>
-            )}
+
+
 
             {/* Quick Actions Grid */}
             <motion.div
@@ -338,7 +222,7 @@ export const Dashboard = () => {
               transition={{ delay: 0.8 }}
               className="text-center text-slate-500 text-sm mt-12"
             >
-              🚗 Need help? Contact us 24/7 at 1-800-RENT-CAR
+              � Keep up with your daily tasks and maintain your streaks!
             </motion.p>
           </div>
         </main>
