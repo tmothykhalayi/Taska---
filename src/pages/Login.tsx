@@ -58,7 +58,7 @@ export function Login() {
       localStorage.setItem('user', JSON.stringify({ email, id: Date.now() }))
       localStorage.setItem('token', 'demo-token-' + Date.now())
       
-      navigate('/dashboard/customer')
+      navigate('/dashboard/tasker')
     } catch (error) {
       setGeneralError('Login failed. Please try again.')
     } finally {

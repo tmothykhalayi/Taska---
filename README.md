@@ -55,6 +55,26 @@ Users can browse and manage their tasks, track completion progress, earn badges 
 
 Administrators manage users, track application analytics, monitor task completion trends, and manage reward system via the admin dashboard.
 
+## Roles In Taska
+
+Taska has two roles in the system:
+
+1. Tasker
+2. Admin
+
+### Role Feature Access
+
+| Feature | Tasker | Admin |
+|---------|--------|-------|
+| Create Tasks | ✅ | ✅ |
+| Manage Streaks | ✅ | ✅ |
+| Earn Badges | ✅ | ✅ |
+| View Quotes | ✅ | ✅ |
+| Manage All Users | ❌ | ✅ |
+| Manage Quotes | ❌ | ✅ |
+| Manage Badges | ❌ | ✅ |
+| System Admin Panel | ❌ | ✅ |
+
 ## 🏗️ Architecture
 
 ### Project Structure
@@ -72,8 +92,8 @@ src/
 │   ├── Contact.tsx              # Contact page
 │   └── Locations.tsx            # Task Dashboard with task management
 ├── Dashboards/                  # Dashboard pages
-│   ├── Customer/                # Customer dashboard
-│   │   ├── Dashboard.tsx        # Customer main dashboard
+│   ├── Tasker/                  # Tasker dashboard
+│   │   ├── Dashboard.tsx        # Tasker main dashboard
 │   │   ├── MiningCheck-in.tsx   # Morning motivation check-in
 │   │   ├── NightCheck-in.tsx    # Night reflection check-in
 │   │   ├── MindMap.tsx          # Task mind mapping
@@ -105,7 +125,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import CustomerDashboard from './Dashboards/Customer/Dashboard';
+import TaskerDashboard from './Dashboards/Tasker/Dashboard';
 import AdminDashboard from './Dashboards/Admin/Dashboard';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 
@@ -117,10 +137,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route 
-          path="/dashboard/customer" 
+          path="/dashboard/tasker" 
           element={
             <ProtectedRoute>
-              <CustomerDashboard />
+              <TaskerDashboard />
             </ProtectedRoute>
           } 
         />
@@ -229,7 +249,7 @@ function Component() {
   const navigate = useNavigate();
   
   const handleNavigate = () => {
-    navigate('/dashboard/customer');
+    navigate('/dashboard/tasker');
   };
   
   return <button onClick={handleNavigate}>Go to Dashboard</button>;

@@ -114,7 +114,7 @@ export function Register() {
       localStorage.setItem('user', JSON.stringify({ fullName, email, id: Date.now() }))
       localStorage.setItem('token', 'demo-token-' + Date.now())
 
-      navigate('/dashboard/customer')
+      navigate('/dashboard/tasker')
     } catch (error) {
       setGeneralError('Registration failed. Please try again.')
     } finally {
