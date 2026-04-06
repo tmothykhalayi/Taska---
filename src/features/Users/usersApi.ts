@@ -3,7 +3,6 @@ import type {
     AdminCreateUserPayload,
     AdminUpdateUserPayload,
     TUser,
-    User,
 } from '../../types/types';
 import { API_BASE_URL } from '../../config/api';
 

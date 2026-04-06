@@ -1,4 +1,4 @@
-import { CheckCircle, Calendar, Zap, Star } from 'lucide-react';
+import { CheckCircle, Calendar, Zap } from 'lucide-react';
 
 export const Dashboard = () => {
 	return (

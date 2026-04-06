@@ -3,7 +3,6 @@ import {
   Shield,
   Users,
   CheckCircle,
-  TrendingUp,
   LayoutDashboard,
   ClipboardList,
   BarChart3,
@@ -23,14 +22,8 @@ import {
   FileSpreadsheet,
   Printer,
   Award,
-  Star,
   Zap,
-  Trophy,
-  TrendingDown,
   Package,
-  Sliders,
-  Lock,
-  AlertTriangle,
 } from 'lucide-react';
 import {
   useCreateUserMutation,
@@ -78,6 +71,14 @@ type AdminTaskRow = {
   createdAt: string;
   updatedAt: string;
   isOverdue: boolean;
+};
+
+type RewardItem = {
+  id: number;
+  name: string;
+  pointCost: number;
+  category: string;
+  description: string;
 };
 
 const tablePageSize = 10;
@@ -221,7 +222,7 @@ export const AdminDashboard = () => {
     { id: 2, name: 'Daily Doer', description: 'Complete 3 tasks today', type: 'daily', target: 3, reward: 15, isActive: true, startDate: '2026-04-06', endDate: '2026-04-07' },
     { id: 3, name: 'Priority Rush', description: 'Complete 5 high-priority tasks', type: 'special', target: 5, reward: 75, isActive: false, startDate: '2026-04-01', endDate: '2026-04-30' },
   ]);
-  const [rewardItems, setRewardItems] = useState<Array<{ id: number; name: string; pointCost: number; category: string; description: string }>([
+  const [rewardItems] = useState<RewardItem[]>([
     { id: 1, name: 'Extra Vacation Day', pointCost: 500, category: 'time-off', description: 'Claim one extra vacation day' },
     { id: 2, name: 'Coffee Card $10', pointCost: 200, category: 'gift', description: 'Digital coffee gift card' },
     { id: 3, name: 'Priority Task Badge', pointCost: 100, category: 'feature', description: 'Custom badge for profile' },
@@ -414,25 +415,6 @@ export const AdminDashboard = () => {
     return Array.from(bucket.entries())
       .map(([user, stats]) => ({
         user,
-        total: stats.total,
-        completed: stats.completed,
-        percent: stats.total === 0 ? 0 : Math.round((stats.completed / stats.total) * 100),
-      }))
-      .sort((a, b) => b.percent - a.percent);
-  }, [reportTasks]);
-
-  const completionByCategory = useMemo(() => {
-    const bucket = new Map<string, { total: number; completed: number }>();
-    reportTasks.forEach((task) => {
-      const key = task.category || 'General';
-      const current = bucket.get(key) || { total: 0, completed: 0 };
-      current.total += 1;
-      if (task.status === 'completed') current.completed += 1;
-      bucket.set(key, current);
-    });
-    return Array.from(bucket.entries())
-      .map(([category, stats]) => ({
-        category,
         total: stats.total,
         completed: stats.completed,
         percent: stats.total === 0 ? 0 : Math.round((stats.completed / stats.total) * 100),
@@ -756,7 +738,6 @@ export const AdminDashboard = () => {
     window.alert(`Reward processed for user. Points deducted.`);
     setIsRedemptionModalOpen(false);
   };
-  };
 
   const sortTasksBy = (field: 'title' | 'assignedUserName' | 'priority' | 'status' | 'dueDate' | 'createdAt') => {
     if (taskSortBy === field) {
@@ -948,7 +929,7 @@ export const AdminDashboard = () => {
         }).unwrap();
       } else {
         await updateTask({
-          id: editingTaskId,
+          id: editingTaskId!,
           data: {
             title: taskForm.title.trim(),
             description: taskForm.description.trim(),
@@ -2280,7 +2261,7 @@ export const AdminDashboard = () => {
                   </div>
 
                   <div className="mb-6 grid gap-4 md:grid-cols-2">
-                    {rewardItems.map((reward) => (
+                    {rewardItems.map((reward: RewardItem) => (
                       <div key={reward.id} className="rounded-lg border border-slate-200 p-4">
                         <div className="mb-2 flex items-start justify-between">
                           <div>
@@ -2487,7 +2468,6 @@ export const AdminDashboard = () => {
                         </select>
                       </div>
                       <div>
-                      <div>
                         <label className="mb-1 block text-sm font-medium text-slate-700">Unlock Criteria</label>
                         <input
                           type="text"
@@ -2617,7 +2597,7 @@ export const AdminDashboard = () => {
                           className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
                         >
                           <option value="">Choose reward</option>
-                          {rewardItems.map((reward) => (
+                          {rewardItems.map((reward: RewardItem) => (
                             <option key={reward.id} value={reward.id}>{reward.name} ({reward.pointCost} pts)</option>
                           ))}
                         </select>
@@ -2638,21 +2618,7 @@ export const AdminDashboard = () => {
                     </form>
                   </div>
                 </div>
-                )}
-              </section>
-            ) : null}
-                        <button type="button" onClick={() => setIsBadgeModalOpen(false)} className="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
-                          Cancel
-                        </button>
-                        <button type="button" onClick={handleSaveBadge} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
-                          Save Badge
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
               )}
-
               {isChallengeModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4">
                   <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
@@ -2760,7 +2726,7 @@ export const AdminDashboard = () => {
                           className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
                         >
                           <option value="">Choose reward</option>
-                          {rewardItems.map((reward) => (
+                          {rewardItems.map((reward: RewardItem) => (
                             <option key={reward.id} value={reward.id}>{reward.name} ({reward.pointCost} pts)</option>
                           ))}
                         </select>
