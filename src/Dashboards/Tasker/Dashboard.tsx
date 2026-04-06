@@ -26,7 +26,7 @@ import {
 
 type TaskCategory = 'work' | 'study' | 'personal';
 type SortBy = 'priority' | 'status' | 'category' | 'dueDate';
-type DashboardSection = 'tasks' | 'progress' | 'rewards' | 'inspiration' | 'checkins' | 'mindmap';
+type DashboardSection = 'overview' | 'tasks' | 'progress' | 'rewards' | 'inspiration' | 'checkins' | 'mindmap';
 
 type TaskItem = {
   id: number;
@@ -43,6 +43,7 @@ type TaskItem = {
 const categoryValues: TaskCategory[] = ['work', 'study', 'personal'];
 
 const sectionItems: Array<{ id: DashboardSection; label: string }> = [
+  { id: 'overview', label: 'Overview' },
   { id: 'tasks', label: 'Task Management' },
   { id: 'progress', label: 'Progress & Metrics' },
   { id: 'rewards', label: 'Gamification' },
@@ -93,7 +94,7 @@ export const Dashboard = () => {
   const { user } = useSelector((state: RootState) => state.userAuth);
   const currentUserId = Number((user as any)?.id ?? (user as any)?.user_id ?? 0);
 
-  const [activeSection, setActiveSection] = useState<DashboardSection>('tasks');
+  const [activeSection, setActiveSection] = useState<DashboardSection>('overview');
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
   const [taskError, setTaskError] = useState('');
 
@@ -272,6 +273,74 @@ export const Dashboard = () => {
   };
 
   const renderActiveSection = () => {
+    if (activeSection === 'overview') {
+      return (
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="mb-4 flex items-start justify-between gap-4">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Dashboard Overview</h2>
+              <p className="text-sm text-slate-600">A quick snapshot of your workload, momentum, and motivation.</p>
+            </div>
+            <div className="rounded-xl bg-blue-50 px-3 py-2 text-right">
+              <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">Today</p>
+              <p className="text-sm font-medium text-blue-900">{new Date().toLocaleDateString()}</p>
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <CheckCircle className="h-6 w-6 text-emerald-600" />
+              <p className="mt-2 text-sm text-slate-600">Completion Rate</p>
+              <p className="text-2xl font-bold text-slate-900">{metrics.completionPct}%</p>
+            </div>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <Flame className="h-6 w-6 text-rose-600" />
+              <p className="mt-2 text-sm text-slate-600">Current Streak</p>
+              <p className="text-2xl font-bold text-slate-900">{metrics.streak} days</p>
+            </div>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <Trophy className="h-6 w-6 text-amber-600" />
+              <p className="mt-2 text-sm text-slate-600">Reward Points</p>
+              <p className="text-2xl font-bold text-slate-900">{metrics.points}</p>
+            </div>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <Calendar className="h-6 w-6 text-blue-600" />
+              <p className="mt-2 text-sm text-slate-600">Tasks Today</p>
+              <p className="text-2xl font-bold text-slate-900">{metrics.total}</p>
+            </div>
+          </div>
+
+          <div className="mt-5 grid gap-4 lg:grid-cols-2">
+            <div className="rounded-xl border border-slate-200 p-4">
+              <p className="mb-3 text-sm font-semibold text-slate-700">Quick Health</p>
+              <div className="space-y-3 text-sm text-slate-700">
+                <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+                  <span>Pending Tasks</span>
+                  <strong>{metrics.pending}</strong>
+                </div>
+                <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+                  <span>In Progress</span>
+                  <strong>{metrics.inProgress}</strong>
+                </div>
+                <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+                  <span>Badges Unlocked</span>
+                  <strong>{badges.filter((badge) => badge.unlocked).length}</strong>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-slate-200 p-4">
+              <p className="mb-3 text-sm font-semibold text-slate-700">Focus Reminder</p>
+              <div className="rounded-lg bg-blue-50 p-4 text-sm text-blue-900">
+                <div className="mb-2 inline-flex items-center gap-2 font-medium"><Sparkles className="h-4 w-4" /> Quote of the day</div>
+                <p>"{quoteOfDay()}"</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
     if (activeSection === 'tasks') {
       return (
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -418,7 +487,7 @@ export const Dashboard = () => {
       return (
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="mb-2 text-lg font-bold text-slate-900">4. Daily Inspiration & Motivation</h2>
-          <div className="rounded-lg bg-indigo-50 p-4 text-indigo-900">
+          <div className="rounded-lg bg-blue-50 p-4 text-blue-900">
             <div className="mb-2 inline-flex items-center gap-2"><Sparkles className="h-4 w-4" /> Quote of the day</div>
             <p className="text-sm">"{quoteOfDay()}"</p>
           </div>
