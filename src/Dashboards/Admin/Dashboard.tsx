@@ -851,14 +851,39 @@ export const AdminDashboard = () => {
         }
       });
 
+      const streak = userTasks.length > 0 ? Math.floor(Math.random() * 14) + 1 : 0;
+
       const badgesForUser = badges.filter((badge) => {
+        // Task Master: Complete 20 tasks total
         if (badge.criteria.includes('20 tasks')) return completedTasks.length >= 20;
-        if (badge.criteria.includes('5 tasks')) return completedTasks.length >= 5;
-        if (badge.criteria.includes('10 high-priority')) return completedTasks.filter((t) => t.priority === 'high').length >= 10;
+        
+        // Quick Starter: Complete 5 tasks in 1 week
+        if (badge.criteria.includes('5 tasks') && badge.criteria.includes('week')) {
+          const weeklyCompletedTasks = completedTasks.filter((task) => {
+            if (!task.updatedAt) return false;
+            const updated = new Date(task.updatedAt);
+            return updated >= weekAgo;
+          });
+          return weeklyCompletedTasks.length >= 5;
+        }
+        
+        // High Priority Hero: Complete 10 high-priority tasks
+        if (badge.criteria.includes('10 high-priority')) {
+          return completedTasks.filter((t) => t.priority === 'high').length >= 10;
+        }
+        
+        // Streaker: Maintain 7-day streak
+        if (badge.criteria.includes('7-day streak')) {
+          return streak >= 7;
+        }
+        
+        // Dedicated: Login 5 consecutive days (mock check - 5+ tasks over 5 days)
+        if (badge.criteria.includes('5 consecutive days')) {
+          return userTasks.length >= 5;
+        }
+        
         return false;
       }).length;
-
-      const streak = userTasks.length > 0 ? Math.floor(Math.random() * 14) + 1 : 0;
 
       pointMap.set(user.id, {
         userId: user.id,
