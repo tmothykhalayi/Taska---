@@ -41,8 +41,15 @@ import {
   useGetAllTasksQuery,
   useUpdateTaskMutation,
 } from '../../features/Tasks/tasksApi';
+import {
+  type NotificationSettings,
+  type PlatformSettings,
+  type SecuritySettings,
+  useGetSettingsQuery,
+  useUpdateSettingsMutation,
+} from '../../features/Settings/settingsApi';
 import type { AppDispatch, RootState } from '../../app/store';
-import { clearUser } from '../../features/Auth/UserAuthSlice';
+import { clearUser, setUserDetails } from '../../features/Auth/UserAuthSlice';
 
 const adminNavItems = [
   { id: 'dashboard-overview', label: 'Dashboard Overview', icon: LayoutDashboard },
@@ -182,9 +189,78 @@ export const AdminDashboard = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  useEffect(() => {
+    setMyDetailsForm({
+      name: user?.name || '',
+      email: user?.email || '',
+      phone: user?.phone || '',
+      newPassword: '',
+    });
+  }, [user]);
+
   const handleLogout = () => {
     dispatch(clearUser());
     navigate('/login');
+  };
+
+  const handleSaveSettings = async () => {
+    try {
+      setSettingsError('');
+      await updateSettings({
+        platformSettings,
+        notificationSettings,
+        securitySettings,
+      }).unwrap();
+      setSettingsSavedAt(new Date().toLocaleTimeString());
+    } catch {
+      setSettingsError('Failed to save settings. Please try again.');
+    }
+  };
+
+  const handleUpdateMyDetails = async () => {
+    setMyDetailsMessage('');
+    setMyDetailsError('');
+
+    const userId = Number(user?.user_id ?? 0);
+    if (!userId) {
+      setMyDetailsError('Unable to identify your account. Please login again.');
+      return;
+    }
+
+    const name = myDetailsForm.name.trim();
+    const email = myDetailsForm.email.trim();
+    const phone = myDetailsForm.phone.trim();
+    const newPassword = myDetailsForm.newPassword.trim();
+
+    if (!name || !email) {
+      setMyDetailsError('Name and email are required.');
+      return;
+    }
+
+    try {
+      const payload = {
+        name,
+        email,
+        phone,
+        ...(newPassword ? { password: newPassword } : {}),
+      };
+
+      await updateUser({ id: userId, data: payload }).unwrap();
+
+      const updatedLocalUser = {
+        ...(user || {}),
+        name,
+        email,
+        phone,
+      };
+
+      dispatch(setUserDetails(updatedLocalUser));
+      setMyDetailsForm((prev) => ({ ...prev, newPassword: '' }));
+      setMyDetailsMessage('Your details were updated successfully.');
+      setSettingsSavedAt(new Date().toLocaleTimeString());
+    } catch {
+      setMyDetailsError('Failed to update your details. Please try again.');
+    }
   };
 
   const [activeItem, setActiveItem] = useState<(typeof adminNavItems)[number]['id']>('dashboard-overview');
@@ -235,6 +311,19 @@ export const AdminDashboard = () => {
   const [reportStatusFilter, setReportStatusFilter] = useState<'all' | TaskStatus>('all');
   const [reportPriorityFilter, setReportPriorityFilter] = useState<'all' | TaskPriority>('all');
   const [reportCategoryFilter, setReportCategoryFilter] = useState<string>('all');
+  const [platformSettings, setPlatformSettings] = useState<PlatformSettings>({} as PlatformSettings);
+  const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({} as NotificationSettings);
+  const [securitySettings, setSecuritySettings] = useState<SecuritySettings>({} as SecuritySettings);
+  const [settingsSavedAt, setSettingsSavedAt] = useState<string | null>(null);
+  const [settingsError, setSettingsError] = useState('');
+  const [myDetailsForm, setMyDetailsForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    newPassword: '',
+  });
+  const [myDetailsMessage, setMyDetailsMessage] = useState('');
+  const [myDetailsError, setMyDetailsError] = useState('');
 
   // Gamification State
   const [gamificationTab, setGamificationTab] = useState<'badges' | 'points' | 'challenges' | 'leaderboard' | 'redemptions' | 'analytics' | 'rules'>('badges');
@@ -285,12 +374,25 @@ export const AdminDashboard = () => {
 
   const { data: users = [], isLoading: usersLoading, isFetching: usersFetching } = useGetUsersQuery();
   const { data: tasks = [], isLoading: tasksLoading, isFetching: tasksFetching } = useGetAllTasksQuery();
+  const { data: settingsData, isLoading: settingsLoading } = useGetSettingsQuery();
 
   const [createUser, { isLoading: isCreatingUser }] = useCreateUserMutation();
   const [updateUser, { isLoading: isUpdatingUser }] = useUpdateUserMutation();
   const [deleteUser, { isLoading: isDeletingUser }] = useDeleteUserMutation();
   const [createTask, { isLoading: isCreatingTask }] = useCreateTaskMutation();
   const [updateTask, { isLoading: isUpdatingTask }] = useUpdateTaskMutation();
+  const [updateSettings, { isLoading: isUpdatingSettings }] = useUpdateSettingsMutation();
+
+  useEffect(() => {
+    if (!settingsData) return;
+    setPlatformSettings(settingsData.platformSettings);
+    setNotificationSettings(settingsData.notificationSettings);
+    setSecuritySettings(settingsData.securitySettings);
+    const timestamp = settingsData.updatedAt
+      ? new Date(settingsData.updatedAt).toLocaleTimeString()
+      : null;
+    setSettingsSavedAt(timestamp);
+  }, [settingsData]);
 
   const normalizedUsers = useMemo<AdminUserRow[]>(() => {
     return (users as any[]).map((user) => {
@@ -397,6 +499,74 @@ export const AdminDashboard = () => {
     () => filteredAndSortedTasks.filter((task) => task.isOverdue),
     [filteredAndSortedTasks],
   );
+
+  const overviewInsights = useMemo(() => {
+    const totalUsers = normalizedUsers.length;
+    const activeUsers = normalizedUsers.filter((user) => user.status === 'active').length;
+    const adminUsers = normalizedUsers.filter((user) => user.role === 'admin').length;
+    const taskerUsers = Math.max(0, totalUsers - adminUsers);
+
+    const totalTasks = normalizedTasks.length;
+    const completedTasks = normalizedTasks.filter((task) => task.status === 'completed').length;
+    const pendingTasks = normalizedTasks.filter((task) => task.status === 'pending').length;
+    const inProgressTasks = normalizedTasks.filter((task) => task.status === 'in-progress').length;
+    const overdueCount = normalizedTasks.filter((task) => task.isOverdue).length;
+
+    const completionRate = totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
+    const overdueRate = totalTasks === 0 ? 0 : Math.round((overdueCount / totalTasks) * 100);
+    const avgTasksPerUser = totalUsers === 0 ? 0 : Number((totalTasks / totalUsers).toFixed(1));
+
+    const priorityCounts: Record<TaskPriority, number> = { high: 0, medium: 0, low: 0 };
+    normalizedTasks.forEach((task) => {
+      priorityCounts[task.priority] += 1;
+    });
+
+    const assignedCount = new Map<string, { total: number; completed: number }>();
+    normalizedTasks.forEach((task) => {
+      const key = task.assignedUserName || 'Unassigned';
+      const current = assignedCount.get(key) || { total: 0, completed: 0 };
+      current.total += 1;
+      if (task.status === 'completed') current.completed += 1;
+      assignedCount.set(key, current);
+    });
+
+    const topPerformers = Array.from(assignedCount.entries())
+      .map(([name, stats]) => ({
+        name,
+        total: stats.total,
+        completed: stats.completed,
+        completionRate: stats.total === 0 ? 0 : Math.round((stats.completed / stats.total) * 100),
+      }))
+      .sort((a, b) => b.completed - a.completed)
+      .slice(0, 3);
+
+    const recentTasks = [...normalizedTasks]
+      .sort((a, b) => {
+        const left = new Date(a.createdAt || a.updatedAt || 0).getTime();
+        const right = new Date(b.createdAt || b.updatedAt || 0).getTime();
+        return right - left;
+      })
+      .slice(0, 5);
+
+    return {
+      totalUsers,
+      activeUsers,
+      inactiveUsers: Math.max(0, totalUsers - activeUsers),
+      adminUsers,
+      taskerUsers,
+      totalTasks,
+      completedTasks,
+      pendingTasks,
+      inProgressTasks,
+      overdueCount,
+      completionRate,
+      overdueRate,
+      avgTasksPerUser,
+      priorityCounts,
+      topPerformers,
+      recentTasks,
+    };
+  }, [normalizedTasks, normalizedUsers]);
 
   const analyticsDateRange = useMemo(() => {
     const end = analyticsEndDate ? new Date(`${analyticsEndDate}T23:59:59`) : new Date();
@@ -1327,27 +1497,203 @@ export const AdminDashboard = () => {
           </header>
 
           {activeItem === 'dashboard-overview' ? (
-            <div className="grid gap-6 md:grid-cols-4">
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <Users className="h-8 w-8 text-blue-600" />
-                <p className="mt-4 text-sm text-slate-600">Total Users</p>
-                <p className="text-3xl font-bold text-slate-900">{normalizedUsers.length}</p>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <ClipboardList className="h-8 w-8 text-indigo-600" />
-                <p className="mt-4 text-sm text-slate-600">Total Tasks</p>
-                <p className="text-3xl font-bold text-slate-900">{normalizedTasks.length}</p>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <CheckCircle className="h-8 w-8 text-emerald-600" />
-                <p className="mt-4 text-sm text-slate-600">Completed Tasks</p>
-                <p className="text-3xl font-bold text-slate-900">{normalizedTasks.filter((t) => t.status === 'completed').length}</p>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <CalendarClock className="h-8 w-8 text-rose-600" />
-                <p className="mt-4 text-sm text-slate-600">Overdue Tasks</p>
-                <p className="text-3xl font-bold text-slate-900">{normalizedTasks.filter((t) => t.isOverdue).length}</p>
-              </div>
+            <div className="space-y-6">
+              <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <Users className="h-7 w-7 text-blue-600" />
+                    <span className="rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-700">{overviewInsights.activeUsers} active</span>
+                  </div>
+                  <p className="mt-4 text-sm text-slate-600">Total Users</p>
+                  <p className="text-3xl font-bold text-slate-900">{overviewInsights.totalUsers}</p>
+                  <p className="mt-2 text-xs text-slate-500">{overviewInsights.adminUsers} admins • {overviewInsights.taskerUsers} taskers</p>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <ClipboardList className="h-7 w-7 text-blue-600" />
+                    <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700">{overviewInsights.avgTasksPerUser} / user</span>
+                  </div>
+                  <p className="mt-4 text-sm text-slate-600">Total Tasks</p>
+                  <p className="text-3xl font-bold text-slate-900">{overviewInsights.totalTasks}</p>
+                  <p className="mt-2 text-xs text-slate-500">{overviewInsights.inProgressTasks} in progress • {overviewInsights.pendingTasks} pending</p>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <CheckCircle className="h-7 w-7 text-emerald-600" />
+                    <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700">{overviewInsights.completionRate}%</span>
+                  </div>
+                  <p className="mt-4 text-sm text-slate-600">Completed Tasks</p>
+                  <p className="text-3xl font-bold text-slate-900">{overviewInsights.completedTasks}</p>
+                  <p className="mt-2 text-xs text-slate-500">Delivery performance this cycle</p>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <CalendarClock className="h-7 w-7 text-rose-600" />
+                    <span className="rounded-full bg-rose-50 px-2 py-1 text-xs font-semibold text-rose-700">{overviewInsights.overdueRate}%</span>
+                  </div>
+                  <p className="mt-4 text-sm text-slate-600">Overdue Tasks</p>
+                  <p className="text-3xl font-bold text-slate-900">{overviewInsights.overdueCount}</p>
+                  <p className="mt-2 text-xs text-slate-500">Needs attention and follow-up</p>
+                </div>
+              </section>
+
+              <section className="grid gap-6 xl:grid-cols-3">
+                <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm xl:col-span-2">
+                  <div className="mb-5 flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-slate-900">Task Pipeline</h3>
+                    <BarChart3 className="h-5 w-5 text-slate-500" />
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <div className="mb-1 flex items-center justify-between text-sm">
+                        <span className="font-medium text-slate-700">Pending</span>
+                        <span className="text-slate-500">{overviewInsights.pendingTasks}</span>
+                      </div>
+                      <div className="h-2 w-full rounded-full bg-slate-100">
+                        <div
+                          className="h-2 rounded-full bg-amber-500"
+                          style={{ width: `${overviewInsights.totalTasks === 0 ? 0 : Math.max(6, Math.round((overviewInsights.pendingTasks / overviewInsights.totalTasks) * 100))}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="mb-1 flex items-center justify-between text-sm">
+                        <span className="font-medium text-slate-700">In Progress</span>
+                        <span className="text-slate-500">{overviewInsights.inProgressTasks}</span>
+                      </div>
+                      <div className="h-2 w-full rounded-full bg-slate-100">
+                        <div
+                          className="h-2 rounded-full bg-blue-500"
+                          style={{ width: `${overviewInsights.totalTasks === 0 ? 0 : Math.max(6, Math.round((overviewInsights.inProgressTasks / overviewInsights.totalTasks) * 100))}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="mb-1 flex items-center justify-between text-sm">
+                        <span className="font-medium text-slate-700">Completed</span>
+                        <span className="text-slate-500">{overviewInsights.completedTasks}</span>
+                      </div>
+                      <div className="h-2 w-full rounded-full bg-slate-100">
+                        <div
+                          className="h-2 rounded-full bg-emerald-500"
+                          style={{ width: `${overviewInsights.totalTasks === 0 ? 0 : Math.max(6, Math.round((overviewInsights.completedTasks / overviewInsights.totalTasks) * 100))}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                    <div className="rounded-xl border border-rose-100 bg-rose-50 p-3">
+                      <p className="text-xs text-rose-600">High Priority</p>
+                      <p className="text-xl font-bold text-rose-700">{overviewInsights.priorityCounts.high}</p>
+                    </div>
+                    <div className="rounded-xl border border-amber-100 bg-amber-50 p-3">
+                      <p className="text-xs text-amber-700">Medium Priority</p>
+                      <p className="text-xl font-bold text-amber-800">{overviewInsights.priorityCounts.medium}</p>
+                    </div>
+                    <div className="rounded-xl border border-emerald-100 bg-emerald-50 p-3">
+                      <p className="text-xs text-emerald-700">Low Priority</p>
+                      <p className="text-xl font-bold text-emerald-800">{overviewInsights.priorityCounts.low}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <h3 className="mb-4 text-lg font-semibold text-slate-900">Top Performers</h3>
+                    <div className="space-y-3">
+                      {overviewInsights.topPerformers.length === 0 ? (
+                        <p className="text-sm text-slate-500">No task activity yet.</p>
+                      ) : (
+                        overviewInsights.topPerformers.map((performer) => (
+                          <div key={performer.name} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                            <p className="text-sm font-medium text-slate-900">{performer.name}</p>
+                            <p className="text-xs text-slate-600">{performer.completed}/{performer.total} completed</p>
+                            <p className="mt-1 text-xs font-semibold text-blue-700">{performer.completionRate}% completion</p>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <h3 className="mb-4 text-lg font-semibold text-slate-900">Quick Actions</h3>
+                    <div className="space-y-2">
+                      <button
+                        onClick={() => setActiveItem('tasks')}
+                        className="w-full rounded-lg border border-blue-200 px-3 py-2 text-left text-sm font-medium text-blue-700 hover:bg-blue-50"
+                      >
+                        Open Task Monitoring
+                      </button>
+                      <button
+                        onClick={openTaskCreateModal}
+                        className="w-full rounded-lg border border-slate-200 px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50"
+                      >
+                        Create New Task
+                      </button>
+                      <button
+                        onClick={openCreateUserModal}
+                        className="w-full rounded-lg border border-slate-200 px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50"
+                      >
+                        Add New User
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="mb-4 flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-slate-900">Latest Task Activity</h3>
+                  <button
+                    onClick={() => setActiveItem('tasks')}
+                    className="text-sm font-medium text-blue-700 hover:text-blue-800"
+                  >
+                    View all tasks
+                  </button>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="min-w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+                        <th className="px-2 py-2">Task</th>
+                        <th className="px-2 py-2">Assignee</th>
+                        <th className="px-2 py-2">Priority</th>
+                        <th className="px-2 py-2">Status</th>
+                        <th className="px-2 py-2">Due</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {overviewInsights.recentTasks.length === 0 ? (
+                        <tr>
+                          <td colSpan={5} className="px-2 py-6 text-center text-slate-500">No task activity found.</td>
+                        </tr>
+                      ) : (
+                        overviewInsights.recentTasks.map((task) => (
+                          <tr key={task.id} className="border-b border-slate-100 text-slate-700">
+                            <td className="px-2 py-3 font-medium text-slate-900">{task.title}</td>
+                            <td className="px-2 py-3">{task.assignedUserName}</td>
+                            <td className="px-2 py-3 capitalize">{task.priority}</td>
+                            <td className="px-2 py-3">
+                              <span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${statusBadgeClass(task.status)}`}>
+                                {task.status}
+                              </span>
+                            </td>
+                            <td className="px-2 py-3">{formatDate(task.dueDate)}</td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
             </div>
           ) : null}
 
@@ -2790,8 +3136,245 @@ export const AdminDashboard = () => {
 
           {activeItem === 'settings' ? (
             <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <h2 className="text-xl font-bold text-slate-900">Settings</h2>
-              <p className="mt-2 text-sm text-slate-500">Configure monitoring thresholds, reminder cadence, and notification templates.</p>
+              <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900">Settings</h2>
+                  <p className="mt-2 text-sm text-slate-500">Configure workspace defaults, notifications, security policies, and task governance.</p>
+                  {settingsSavedAt ? <p className="mt-1 text-xs font-medium text-emerald-700">Last saved at {settingsSavedAt}</p> : null}
+                </div>
+                <button
+                  onClick={handleSaveSettings}
+                  disabled={isUpdatingSettings || settingsLoading}
+                  className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {isUpdatingSettings ? 'Saving...' : 'Save Settings'}
+                </button>
+              </div>
+
+              {settingsError ? <p className="mb-4 text-sm font-medium text-rose-600">{settingsError}</p> : null}
+
+              <div className="grid gap-6 xl:grid-cols-2">
+                <div className="rounded-xl border border-slate-200 p-5 xl:col-span-2">
+                  <div className="mb-4 flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-slate-900">My Details</h3>
+                    <span className="rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">Account Settings</span>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <label className="text-sm text-slate-700">
+                      Full Name
+                      <input
+                        value={myDetailsForm.name}
+                        onChange={(e) => setMyDetailsForm({ ...myDetailsForm, name: e.target.value })}
+                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
+                      />
+                    </label>
+                    <label className="text-sm text-slate-700">
+                      Email Address
+                      <input
+                        type="email"
+                        value={myDetailsForm.email}
+                        onChange={(e) => setMyDetailsForm({ ...myDetailsForm, email: e.target.value })}
+                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
+                      />
+                    </label>
+                    <label className="text-sm text-slate-700">
+                      Phone Number
+                      <input
+                        value={myDetailsForm.phone}
+                        onChange={(e) => setMyDetailsForm({ ...myDetailsForm, phone: e.target.value })}
+                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
+                      />
+                    </label>
+                    <label className="text-sm text-slate-700">
+                      New Password (optional)
+                      <input
+                        type="password"
+                        value={myDetailsForm.newPassword}
+                        onChange={(e) => setMyDetailsForm({ ...myDetailsForm, newPassword: e.target.value })}
+                        placeholder="Leave blank to keep current password"
+                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
+                      />
+                    </label>
+                  </div>
+
+                  {myDetailsError ? <p className="mt-3 text-sm font-medium text-rose-600">{myDetailsError}</p> : null}
+                  {myDetailsMessage ? <p className="mt-3 text-sm font-medium text-emerald-700">{myDetailsMessage}</p> : null}
+
+                  <div className="mt-4 flex justify-end">
+                    <button
+                      onClick={handleUpdateMyDetails}
+                      disabled={isUpdatingUser}
+                      className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {isUpdatingUser ? 'Updating...' : 'Update My Details'}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 p-5">
+                  <h3 className="mb-4 text-lg font-semibold text-slate-900">Workspace Defaults</h3>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <label className="text-sm text-slate-700 sm:col-span-2">
+                      Workspace Name
+                      <input
+                        value={platformSettings.workspaceName}
+                        onChange={(e) => setPlatformSettings({ ...platformSettings, workspaceName: e.target.value })}
+                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
+                      />
+                    </label>
+                    <label className="text-sm text-slate-700">
+                      Timezone
+                      <select
+                        value={platformSettings.timezone}
+                        onChange={(e) => setPlatformSettings({ ...platformSettings, timezone: e.target.value })}
+                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
+                      >
+                        {(settingsData?.options.timezones || []).map((timezone) => (
+                          <option key={timezone} value={timezone}>{timezone}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="text-sm text-slate-700">
+                      Default Task Priority
+                      <select
+                        value={platformSettings.defaultTaskPriority}
+                        onChange={(e) => setPlatformSettings({ ...platformSettings, defaultTaskPriority: e.target.value as TaskPriority })}
+                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
+                      >
+                        {(settingsData?.options.taskPriorities || []).map((priority) => (
+                          <option key={priority} value={priority}>{priority}</option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 p-5">
+                  <h3 className="mb-4 text-lg font-semibold text-slate-900">Task Governance</h3>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <label className="text-sm text-slate-700">
+                      Reminder Cadence (hours)
+                      <input
+                        type="number"
+                        min={1}
+                        value={platformSettings.reminderCadenceHours}
+                        onChange={(e) => setPlatformSettings({ ...platformSettings, reminderCadenceHours: Number(e.target.value) })}
+                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
+                      />
+                    </label>
+                    <label className="text-sm text-slate-700">
+                      Overdue Threshold (days)
+                      <input
+                        type="number"
+                        min={1}
+                        value={platformSettings.overdueThresholdDays}
+                        onChange={(e) => setPlatformSettings({ ...platformSettings, overdueThresholdDays: Number(e.target.value) })}
+                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
+                      />
+                    </label>
+                    <label className="text-sm text-slate-700 sm:col-span-2">
+                      Auto-archive completed tasks after (days)
+                      <input
+                        type="number"
+                        min={1}
+                        value={platformSettings.autoArchiveCompletedDays}
+                        onChange={(e) => setPlatformSettings({ ...platformSettings, autoArchiveCompletedDays: Number(e.target.value) })}
+                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 p-5">
+                  <h3 className="mb-4 text-lg font-semibold text-slate-900">Notifications</h3>
+                  <div className="space-y-3">
+                    <label className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700">
+                      Email digest notifications
+                      <input
+                        type="checkbox"
+                        checked={notificationSettings.emailDigest}
+                        onChange={(e) => setNotificationSettings({ ...notificationSettings, emailDigest: e.target.checked })}
+                        className="h-4 w-4"
+                      />
+                    </label>
+                    <label className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700">
+                      Due soon alerts
+                      <input
+                        type="checkbox"
+                        checked={notificationSettings.dueSoonAlerts}
+                        onChange={(e) => setNotificationSettings({ ...notificationSettings, dueSoonAlerts: e.target.checked })}
+                        className="h-4 w-4"
+                      />
+                    </label>
+                    <label className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700">
+                      Overdue escalation alerts
+                      <input
+                        type="checkbox"
+                        checked={notificationSettings.overdueEscalation}
+                        onChange={(e) => setNotificationSettings({ ...notificationSettings, overdueEscalation: e.target.checked })}
+                        className="h-4 w-4"
+                      />
+                    </label>
+                    <label className="text-sm text-slate-700">
+                      Weekly summary day
+                      <select
+                        value={notificationSettings.weeklySummaryDay}
+                        onChange={(e) => setNotificationSettings({ ...notificationSettings, weeklySummaryDay: e.target.value })}
+                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
+                      >
+                        {(settingsData?.options.weeklySummaryDays || []).map((day) => (
+                          <option key={day} value={day}>{day}</option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 p-5">
+                  <h3 className="mb-4 text-lg font-semibold text-slate-900">Security Policies</h3>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <label className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 sm:col-span-2">
+                      Enforce Two-Factor Authentication for admins
+                      <input
+                        type="checkbox"
+                        checked={securitySettings.enforceTwoFactor}
+                        onChange={(e) => setSecuritySettings({ ...securitySettings, enforceTwoFactor: e.target.checked })}
+                        className="h-4 w-4"
+                      />
+                    </label>
+                    <label className="text-sm text-slate-700">
+                      Session timeout (minutes)
+                      <input
+                        type="number"
+                        min={5}
+                        value={securitySettings.sessionTimeoutMinutes}
+                        onChange={(e) => setSecuritySettings({ ...securitySettings, sessionTimeoutMinutes: Number(e.target.value) })}
+                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
+                      />
+                    </label>
+                    <label className="text-sm text-slate-700">
+                      Password rotation (days)
+                      <input
+                        type="number"
+                        min={30}
+                        value={securitySettings.passwordRotationDays}
+                        onChange={(e) => setSecuritySettings({ ...securitySettings, passwordRotationDays: Number(e.target.value) })}
+                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
+                      />
+                    </label>
+                    <label className="text-sm text-slate-700 sm:col-span-2">
+                      Failed login attempt limit
+                      <input
+                        type="number"
+                        min={3}
+                        value={securitySettings.loginAttemptLimit}
+                        onChange={(e) => setSecuritySettings({ ...securitySettings, loginAttemptLimit: Number(e.target.value) })}
+                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
             </section>
           ) : null}
         </div>

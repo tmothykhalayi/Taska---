@@ -4,6 +4,7 @@ import { loginApi } from "../features/Auth/LoginApi";
 import { registrationAPI } from "../features/Auth/RegistrationAPI";
 import { usersAPI } from "../features/Users/usersApi";
 import { tasksAPI } from "../features/Tasks/tasksApi";
+import { settingsAPI } from "../features/Settings/settingsApi";
 
 
 // Import slices
@@ -17,6 +18,7 @@ const store = configureStore({
     [registrationAPI.reducerPath]: registrationAPI.reducer,
     [usersAPI.reducerPath]: usersAPI.reducer,
     [tasksAPI.reducerPath]: tasksAPI.reducer,
+    [settingsAPI.reducerPath]: settingsAPI.reducer,
     
     // State slices
     userActions: userActionsReducer,
@@ -28,6 +30,7 @@ const store = configureStore({
       loginApi.middleware,
       registrationAPI.middleware,
       tasksAPI.middleware,
+      settingsAPI.middleware,
     ),
 });
 
