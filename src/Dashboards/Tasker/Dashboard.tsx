@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   Calendar,
   CheckCircle,
@@ -13,7 +14,8 @@ import {
   Trash2,
   Trophy,
 } from 'lucide-react';
-import type { RootState } from '../../app/store';
+import type { AppDispatch, RootState } from '../../app/store';
+import { clearUser } from '../../features/Auth/UserAuthSlice';
 import {
   type Task,
   type TaskPriority,
@@ -91,8 +93,37 @@ const quoteOfDay = () => {
 };
 
 export const Dashboard = () => {
-  const { user } = useSelector((state: RootState) => state.userAuth);
-  const currentUserId = Number((user as any)?.id ?? (user as any)?.user_id ?? 0);
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useSelector((state: RootState) => state.userAuth);
+  const currentUserId = Number(user?.user_id ?? 0);
+  const displayName = useMemo(() => {
+    const rawName = (user?.name || '').trim();
+    if (!rawName) return 'User';
+
+    const normalized = rawName.replace(/\s+/g, ' ');
+    const tokens = normalized.split(' ');
+    const deduped = tokens
+      .filter((token, index) => index === 0 || token.toLowerCase() !== tokens[index - 1].toLowerCase())
+      .join(' ');
+
+    if (deduped.includes('@')) {
+      return deduped.split('@')[0];
+    }
+
+    return deduped;
+  }, [user]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login');
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handleLogout = () => {
+    dispatch(clearUser());
+    navigate('/login');
+  };
 
   const [activeSection, setActiveSection] = useState<DashboardSection>('overview');
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
@@ -556,6 +587,7 @@ export const Dashboard = () => {
         <header className="mb-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:pl-80">
           <h1 className="text-2xl font-bold text-slate-900">Tasker Dashboard</h1>
           <p className="text-sm text-slate-600">Plan smart, stay consistent, and gamify your productivity.</p>
+          <p className="mt-1 text-base font-semibold text-blue-700">Welcome, {displayName}</p>
           <p className="mt-1 text-xs text-slate-500">{isLoading || isFetching ? 'Syncing tasks...' : `Loaded ${tasks.length} task(s)`}</p>
         </header>
 
@@ -614,7 +646,7 @@ export const Dashboard = () => {
             <button type="button" className="w-full rounded-xl px-4 py-3 text-left text-sm font-medium text-slate-600 hover:bg-slate-50">
               Settings
             </button>
-            <button type="button" className="w-full rounded-xl px-4 py-3 text-left text-sm font-medium text-rose-600 hover:bg-rose-50">
+            <button type="button" onClick={handleLogout} className="w-full rounded-xl px-4 py-3 text-left text-sm font-medium text-rose-600 hover:bg-rose-50">
               Logout
             </button>
           </div>

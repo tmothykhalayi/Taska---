@@ -1,4 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   Shield,
   Users,
@@ -39,6 +41,8 @@ import {
   useGetAllTasksQuery,
   useUpdateTaskMutation,
 } from '../../features/Tasks/tasksApi';
+import type { AppDispatch, RootState } from '../../app/store';
+import { clearUser } from '../../features/Auth/UserAuthSlice';
 
 const adminNavItems = [
   { id: 'dashboard-overview', label: 'Dashboard Overview', icon: LayoutDashboard },
@@ -151,6 +155,38 @@ const downloadTextFile = (fileName: string, content: string, contentType: string
 };
 
 export const AdminDashboard = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useSelector((state: RootState) => state.userAuth);
+
+  const displayName = useMemo(() => {
+    const rawName = (user?.name || '').trim();
+    if (!rawName) return 'User';
+
+    const normalized = rawName.replace(/\s+/g, ' ');
+    const tokens = normalized.split(' ');
+    const deduped = tokens
+      .filter((token, index) => index === 0 || token.toLowerCase() !== tokens[index - 1].toLowerCase())
+      .join(' ');
+
+    if (deduped.includes('@')) {
+      return deduped.split('@')[0];
+    }
+
+    return deduped;
+  }, [user]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login');
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handleLogout = () => {
+    dispatch(clearUser());
+    navigate('/login');
+  };
+
   const [activeItem, setActiveItem] = useState<(typeof adminNavItems)[number]['id']>('dashboard-overview');
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -1264,7 +1300,7 @@ export const AdminDashboard = () => {
           })}
         </nav>
 
-        <button className="mt-6 flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm text-rose-600 transition-colors hover:bg-rose-50">
+        <button onClick={handleLogout} className="mt-6 flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm text-rose-600 transition-colors hover:bg-rose-50">
           <LogOut className="h-4 w-4" />
           <span className="font-medium">Logout</span>
         </button>
@@ -1285,6 +1321,7 @@ export const AdminDashboard = () => {
               <div>
                 <h1 className="text-2xl font-bold text-slate-900">Admin Dashboard</h1>
                 <p className="text-sm text-slate-600">Task monitoring, user governance, and productivity insights</p>
+                <p className="text-base font-semibold text-blue-700">Welcome, {displayName}</p>
               </div>
             </div>
           </header>
