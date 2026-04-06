@@ -10,7 +10,6 @@ import {
   Plus,
   Sparkles,
   Sunrise,
-  Target,
   Trash2,
   Trophy,
 } from 'lucide-react';
@@ -378,45 +377,67 @@ export const Dashboard = () => {
           <h2 className="mb-4 text-lg font-bold text-slate-900">1. Task Management</h2>
 
           <div className="mb-3 grid gap-2 md:grid-cols-4">
-            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as 'all' | TaskStatus)} className="rounded-lg border border-slate-300 px-3 py-2 text-sm">
-              <option value="all">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="in-progress">In Progress</option>
-              <option value="completed">Completed</option>
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as 'all' | TaskStatus)} className="rounded-lg border-2 border-teal-300 bg-gradient-to-br from-teal-50 to-cyan-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-teal-500 focus:outline-none">
+              <option value="all">📋 All Status</option>
+              <option value="pending">⏳ Pending</option>
+              <option value="in-progress">⚡ In Progress</option>
+              <option value="completed">✅ Completed</option>
             </select>
-            <select value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value as 'all' | TaskPriority)} className="rounded-lg border border-slate-300 px-3 py-2 text-sm">
-              <option value="all">All Priority</option>
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
+            <select value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value as 'all' | TaskPriority)} className="rounded-lg border-2 border-rose-300 bg-gradient-to-br from-rose-50 to-red-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-rose-500 focus:outline-none">
+              <option value="all">🎯 All Priority</option>
+              <option value="high">🔴 High</option>
+              <option value="medium">🟡 Medium</option>
+              <option value="low">🟢 Low</option>
             </select>
-            <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value as 'all' | TaskCategory)} className="rounded-lg border border-slate-300 px-3 py-2 text-sm">
-              <option value="all">All Categories</option>
-              <option value="work">Work</option>
-              <option value="study">Study</option>
-              <option value="personal">Personal</option>
+            <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value as 'all' | TaskCategory)} className="rounded-lg border-2 border-purple-300 bg-gradient-to-br from-purple-50 to-pink-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-purple-500 focus:outline-none">
+              <option value="all">📁 All Categories</option>
+              <option value="work">💼 Work</option>
+              <option value="study">📚 Study</option>
+              <option value="personal">🎨 Personal</option>
             </select>
-            <select value={sortBy} onChange={(e) => setSortBy(e.target.value as SortBy)} className="rounded-lg border border-slate-300 px-3 py-2 text-sm">
-              <option value="priority">Sort by Priority</option>
-              <option value="status">Sort by Status</option>
-              <option value="category">Sort by Category</option>
-              <option value="dueDate">Sort by Due Date</option>
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value as SortBy)} className="rounded-lg border-2 border-orange-300 bg-gradient-to-br from-orange-50 to-amber-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-orange-500 focus:outline-none">
+              <option value="priority">🔼 Sort by Priority</option>
+              <option value="status">📊 Sort by Status</option>
+              <option value="category">📁 Sort by Category</option>
+              <option value="dueDate">📅 Sort by Due Date</option>
             </select>
           </div>
 
           <div className="mb-4 space-y-2">
             {filteredTasks.map((task) => (
-              <div key={task.id} className="rounded-lg border border-slate-200 p-3">
+              <div key={task.id} className={`rounded-lg border-2 p-3 ${
+                task.status === 'completed'
+                  ? 'border-emerald-300 bg-gradient-to-r from-emerald-50 to-emerald-100'
+                  : task.status === 'in-progress'
+                  ? 'border-amber-300 bg-gradient-to-r from-amber-50 to-amber-100'
+                  : 'border-indigo-300 bg-gradient-to-r from-indigo-50 to-indigo-100'
+              }`}>
                 <div className="flex items-start justify-between gap-3">
-                  <div>
+                  <div className="flex-1">
                     <p className="font-semibold text-slate-900">{task.title}</p>
                     <p className="text-xs text-slate-600">{task.description}</p>
-                    <p className="mt-1 text-xs text-slate-500">{task.category} | {task.priority} | due {task.dueDate}</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold ${
+                        task.category === 'work'
+                          ? 'bg-blue-200 text-blue-800'
+                          : task.category === 'study'
+                          ? 'bg-purple-200 text-purple-800'
+                          : 'bg-pink-200 text-pink-800'
+                      }`}>{task.category}</span>
+                      <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold ${
+                        task.priority === 'high'
+                          ? 'bg-rose-200 text-rose-800'
+                          : task.priority === 'medium'
+                          ? 'bg-amber-200 text-amber-800'
+                          : 'bg-emerald-200 text-emerald-800'
+                      }`}>{task.priority}</span>
+                      <span className="text-xs text-slate-500">due {task.dueDate}</span>
+                    </div>
                   </div>
                   <div className="flex gap-1">
-                    <button type="button" onClick={() => toggleComplete(task)} className="rounded-md border border-emerald-300 px-2 py-1 text-xs text-emerald-700">Done</button>
-                    <button type="button" onClick={() => handleEditTask(task)} className="rounded-md border border-blue-300 px-2 py-1 text-xs text-blue-700">Edit</button>
-                    <button type="button" onClick={() => handleDeleteTask(task.id)} className="rounded-md border border-rose-300 px-2 py-1 text-xs text-rose-700"><Trash2 className="h-3 w-3" /></button>
+                    <button type="button" onClick={() => toggleComplete(task)} className="rounded-md bg-emerald-500 px-2 py-1 text-xs font-semibold text-white hover:bg-emerald-600">Done</button>
+                    <button type="button" onClick={() => handleEditTask(task)} className="rounded-md bg-blue-500 px-2 py-1 text-xs font-semibold text-white hover:bg-blue-600">Edit</button>
+                    <button type="button" onClick={() => handleDeleteTask(task.id)} className="rounded-md bg-rose-500 px-2 py-1 text-xs font-semibold text-white hover:bg-rose-600"><Trash2 className="h-3 w-3" /></button>
                   </div>
                 </div>
               </div>
@@ -425,33 +446,33 @@ export const Dashboard = () => {
           </div>
 
           <div className="grid gap-2 md:grid-cols-2">
-            <input value={taskForm.title} onChange={(e) => setTaskForm((p) => ({ ...p, title: e.target.value }))} placeholder="Task title" className="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-            <input value={taskForm.description} onChange={(e) => setTaskForm((p) => ({ ...p, description: e.target.value }))} placeholder="Description" className="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-            <select value={taskForm.priority} onChange={(e) => setTaskForm((p) => ({ ...p, priority: e.target.value as TaskPriority }))} className="rounded-lg border border-slate-300 px-3 py-2 text-sm">
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
+            <input value={taskForm.title} onChange={(e) => setTaskForm((p) => ({ ...p, title: e.target.value }))} placeholder="Task title" className="rounded-lg border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-cyan-50 px-3 py-2 text-sm text-slate-900 placeholder-slate-500 focus:border-blue-500 focus:outline-none" />
+            <input value={taskForm.description} onChange={(e) => setTaskForm((p) => ({ ...p, description: e.target.value }))} placeholder="Description" className="rounded-lg border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-cyan-50 px-3 py-2 text-sm text-slate-900 placeholder-slate-500 focus:border-blue-500 focus:outline-none" />
+            <select value={taskForm.priority} onChange={(e) => setTaskForm((p) => ({ ...p, priority: e.target.value as TaskPriority }))} className="rounded-lg border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-orange-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-amber-500 focus:outline-none">
+              <option value="high">🔴 High</option>
+              <option value="medium">🟡 Medium</option>
+              <option value="low">🟢 Low</option>
             </select>
-            <select value={taskForm.status} onChange={(e) => setTaskForm((p) => ({ ...p, status: e.target.value as TaskStatus }))} className="rounded-lg border border-slate-300 px-3 py-2 text-sm">
-              <option value="pending">Pending</option>
-              <option value="in-progress">In Progress</option>
-              <option value="completed">Completed</option>
+            <select value={taskForm.status} onChange={(e) => setTaskForm((p) => ({ ...p, status: e.target.value as TaskStatus }))} className="rounded-lg border-2 border-indigo-300 bg-gradient-to-br from-indigo-50 to-purple-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:outline-none">
+              <option value="pending">⏳ Pending</option>
+              <option value="in-progress">⚡ In Progress</option>
+              <option value="completed">✅ Completed</option>
             </select>
-            <select value={taskForm.category} onChange={(e) => setTaskForm((p) => ({ ...p, category: e.target.value as TaskCategory }))} className="rounded-lg border border-slate-300 px-3 py-2 text-sm">
+            <select value={taskForm.category} onChange={(e) => setTaskForm((p) => ({ ...p, category: e.target.value as TaskCategory }))} className="rounded-lg border-2 border-purple-300 bg-gradient-to-br from-purple-50 to-pink-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-purple-500 focus:outline-none">
               {categoryValues.map((category) => <option key={category} value={category}>{category}</option>)}
             </select>
-            <input type="date" value={taskForm.dueDate} onChange={(e) => setTaskForm((p) => ({ ...p, dueDate: e.target.value }))} className="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+            <input type="date" value={taskForm.dueDate} onChange={(e) => setTaskForm((p) => ({ ...p, dueDate: e.target.value }))} className="rounded-lg border-2 border-rose-300 bg-gradient-to-br from-rose-50 to-red-50 px-3 py-2 text-sm text-slate-900 focus:border-rose-500 focus:outline-none" />
           </div>
 
           {taskError ? <p className="mt-2 text-sm text-rose-600">{taskError}</p> : null}
 
           <div className="mt-3 flex gap-2">
-            <button type="button" onClick={handleSaveTask} disabled={isCreatingTask || isUpdatingTask} className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-50">
+            <button type="button" onClick={handleSaveTask} disabled={isCreatingTask || isUpdatingTask} className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2 text-sm font-semibold text-white hover:from-emerald-600 hover:to-teal-700 disabled:opacity-50">
               <Plus className="h-4 w-4" />
               {editingTaskId ? 'Update Task' : 'Create Task'}
             </button>
             {editingTaskId ? (
-              <button type="button" onClick={resetForm} className="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-700">
+              <button type="button" onClick={resetForm} className="rounded-lg border-2 border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
                 Cancel Edit
               </button>
             ) : null}
@@ -465,18 +486,18 @@ export const Dashboard = () => {
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="mb-2 text-lg font-bold text-slate-900">2. Progress Tracking & Dashboard Metrics</h2>
           <p className="mb-3 text-sm text-slate-600">Completion rate: {metrics.completionPct}%</p>
-          <div className="mb-4 h-2 w-full rounded-full bg-slate-200">
-            <div className="h-2 rounded-full bg-emerald-500" style={{ width: `${metrics.completionPct}%` }} />
+          <div className="mb-4 h-3 w-full rounded-full bg-slate-200">
+            <div className="h-3 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500" style={{ width: `${metrics.completionPct}%` }} />
           </div>
 
-          <p className="mb-3 text-sm font-medium text-slate-700">Weekly Productivity</p>
+          <p className="mb-3 text-sm font-semibold text-slate-700">Weekly Productivity</p>
           <div className="grid grid-cols-7 gap-2">
             {weeklyBars.map((bar) => (
               <div key={bar.day} className="text-center">
-                <div className="mx-auto flex h-24 w-6 items-end rounded bg-slate-100">
-                  <div className="w-full rounded bg-blue-500" style={{ height: `${bar.value}%` }} />
+                <div className="mx-auto flex h-24 w-6 items-end rounded-lg bg-gradient-to-b from-slate-100 to-slate-200">
+                  <div className="w-full rounded-lg bg-gradient-to-t from-blue-500 to-blue-400" style={{ height: `${bar.value}%` }} />
                 </div>
-                <p className="mt-1 text-xs text-slate-500">{bar.day}</p>
+                <p className="mt-2 text-xs font-semibold text-slate-600">{bar.day}</p>
               </div>
             ))}
           </div>
@@ -490,16 +511,45 @@ export const Dashboard = () => {
           <h2 className="mb-2 text-lg font-bold text-slate-900">3. Gamification & Rewards</h2>
           <p className="text-sm text-slate-600">Earn points, badges, and streak milestones by completing tasks.</p>
           <div className="mt-4 grid gap-3 md:grid-cols-3">
-            <div className="rounded-lg border border-slate-200 p-3 text-sm">Points: <strong>{metrics.points}</strong></div>
-            <div className="rounded-lg border border-slate-200 p-3 text-sm">Current Streak: <strong>{metrics.streak} days</strong></div>
-            <div className="rounded-lg border border-slate-200 p-3 text-sm">Leaderboard: <strong>#2</strong></div>
+            <div className="rounded-lg border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-amber-100 p-4">
+              <p className="text-sm text-amber-700">Points</p>
+              <p className="text-2xl font-bold text-amber-900">{metrics.points}</p>
+            </div>
+            <div className="rounded-lg border-2 border-rose-300 bg-gradient-to-br from-rose-50 to-rose-100 p-4">
+              <p className="text-sm text-rose-700">Current Streak</p>
+              <p className="text-2xl font-bold text-rose-900">{metrics.streak} days</p>
+            </div>
+            <div className="rounded-lg border-2 border-cyan-300 bg-gradient-to-br from-cyan-50 to-cyan-100 p-4">
+              <p className="text-sm text-cyan-700">Leaderboard</p>
+              <p className="text-2xl font-bold text-cyan-900">#2</p>
+            </div>
           </div>
           <div className="mt-4 space-y-2">
+            <p className="text-sm font-semibold text-slate-700">Badges</p>
             {badges.map((badge) => (
-              <div key={badge.name} className="rounded-md border border-slate-200 px-3 py-2 text-sm">
-                <div className="flex items-center gap-2"><Trophy className="h-4 w-4 text-amber-600" /> <span className="font-medium text-slate-900">{badge.name}</span></div>
-                <p className="text-xs text-slate-600">{badge.rule}</p>
-                <p className={`text-xs ${badge.unlocked ? 'text-emerald-700' : 'text-slate-500'}`}>{badge.unlocked ? 'Unlocked' : 'Locked'}</p>
+              <div key={badge.name} className={`rounded-md border-2 px-4 py-3 ${
+                badge.unlocked
+                  ? 'border-emerald-300 bg-gradient-to-r from-emerald-50 to-emerald-100'
+                  : 'border-slate-300 bg-gradient-to-r from-slate-50 to-slate-100'
+              }`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Trophy className={`h-5 w-5 ${
+                      badge.unlocked ? 'text-amber-600' : 'text-slate-400'
+                    }`} />
+                    <span className={`font-bold ${
+                      badge.unlocked ? 'text-emerald-900' : 'text-slate-600'
+                    }`}>{badge.name}</span>
+                  </div>
+                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                    badge.unlocked
+                      ? 'bg-emerald-200 text-emerald-800'
+                      : 'bg-slate-200 text-slate-700'
+                  }`}>{badge.unlocked ? 'Unlocked' : 'Locked'}</span>
+                </div>
+                <p className={`mt-1 text-xs ${
+                  badge.unlocked ? 'text-emerald-700' : 'text-slate-500'
+                }`}>{badge.rule}</p>
               </div>
             ))}
           </div>
@@ -511,18 +561,18 @@ export const Dashboard = () => {
       return (
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="mb-2 text-lg font-bold text-slate-900">4. Daily Inspiration & Motivation</h2>
-          <div className="rounded-lg bg-blue-50 p-4 text-blue-900">
-            <div className="mb-2 inline-flex items-center gap-2"><Sparkles className="h-4 w-4" /> Quote of the day</div>
-            <p className="text-sm">"{quoteOfDay()}"</p>
+          <div className="rounded-lg border-2 border-purple-300 bg-gradient-to-br from-purple-50 to-purple-100 p-4">
+            <div className="mb-2 inline-flex items-center gap-2 font-bold text-purple-900"><Sparkles className="h-5 w-5 text-purple-600" /> Quote of the day</div>
+            <p className="text-sm text-purple-800">"{quoteOfDay()}"</p>
           </div>
           <div className="mt-3 grid gap-3 md:grid-cols-2">
-            <div className="rounded-lg border border-slate-200 p-3 text-sm">
-              <div className="mb-1 inline-flex items-center gap-2 font-medium"><Sunrise className="h-4 w-4 text-amber-600" /> Morning Prompt</div>
-              Start with your hardest task for 45 focused minutes.
+            <div className="rounded-lg border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-amber-100 p-4">
+              <div className="mb-2 inline-flex items-center gap-2 font-bold text-amber-900"><Sunrise className="h-5 w-5 text-amber-600" /> Morning Prompt</div>
+              <p className="text-sm text-amber-800">Start with your hardest task for 45 focused minutes.</p>
             </div>
-            <div className="rounded-lg border border-slate-200 p-3 text-sm">
-              <div className="mb-1 inline-flex items-center gap-2 font-medium"><Moon className="h-4 w-4 text-slate-700" /> Evening Reflection</div>
-              Capture one win and one improvement for tomorrow.
+            <div className="rounded-lg border-2 border-indigo-300 bg-gradient-to-br from-indigo-50 to-indigo-100 p-4">
+              <div className="mb-2 inline-flex items-center gap-2 font-bold text-indigo-900"><Moon className="h-5 w-5 text-indigo-600" /> Evening Reflection</div>
+              <p className="text-sm text-indigo-800">Capture one win and one improvement for tomorrow.</p>
             </div>
           </div>
         </section>
@@ -534,17 +584,17 @@ export const Dashboard = () => {
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="mb-2 text-lg font-bold text-slate-900">5. Morning & Night Check-ins</h2>
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-lg border border-slate-200 p-4">
-              <div className="mb-2 inline-flex items-center gap-2 font-medium"><Sunrise className="h-4 w-4 text-amber-600" /> Morning Check-in</div>
-              <textarea rows={3} value={morningCheckIn.intentions} onChange={(e) => setMorningCheckIn((p) => ({ ...p, intentions: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-              <input value={morningCheckIn.topPriority} onChange={(e) => setMorningCheckIn((p) => ({ ...p, topPriority: e.target.value }))} className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-              <label className="mt-2 flex items-center gap-2 text-sm"><input type="checkbox" checked={morningCheckIn.done} onChange={(e) => setMorningCheckIn((p) => ({ ...p, done: e.target.checked }))} />Complete</label>
+            <div className="rounded-lg border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-amber-100 p-4">
+              <div className="mb-3 inline-flex items-center gap-2 font-bold text-amber-900"><Sunrise className="h-5 w-5 text-amber-600" /> Morning Check-in</div>
+              <textarea rows={3} value={morningCheckIn.intentions} onChange={(e) => setMorningCheckIn((p) => ({ ...p, intentions: e.target.value }))} className="w-full rounded-lg border-2 border-amber-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-amber-400 focus:outline-none" />
+              <input value={morningCheckIn.topPriority} onChange={(e) => setMorningCheckIn((p) => ({ ...p, topPriority: e.target.value }))} placeholder="Top priority" className="mt-2 w-full rounded-lg border-2 border-amber-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-amber-400 focus:outline-none" />
+              <label className="mt-3 flex items-center gap-2 text-sm font-semibold text-amber-900"><input type="checkbox" checked={morningCheckIn.done} onChange={(e) => setMorningCheckIn((p) => ({ ...p, done: e.target.checked }))} className="h-4 w-4 rounded" />Completed</label>
             </div>
-            <div className="rounded-lg border border-slate-200 p-4">
-              <div className="mb-2 inline-flex items-center gap-2 font-medium"><Moon className="h-4 w-4 text-slate-700" /> Night Check-in</div>
-              <textarea rows={3} value={nightCheckIn.reflection} onChange={(e) => setNightCheckIn((p) => ({ ...p, reflection: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-              <textarea rows={2} value={nightCheckIn.nextPlan} onChange={(e) => setNightCheckIn((p) => ({ ...p, nextPlan: e.target.value }))} className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-              <label className="mt-2 flex items-center gap-2 text-sm"><input type="checkbox" checked={nightCheckIn.done} onChange={(e) => setNightCheckIn((p) => ({ ...p, done: e.target.checked }))} />Complete</label>
+            <div className="rounded-lg border-2 border-indigo-300 bg-gradient-to-br from-indigo-50 to-indigo-100 p-4">
+              <div className="mb-3 inline-flex items-center gap-2 font-bold text-indigo-900"><Moon className="h-5 w-5 text-indigo-600" /> Night Check-in</div>
+              <textarea rows={3} value={nightCheckIn.reflection} onChange={(e) => setNightCheckIn((p) => ({ ...p, reflection: e.target.value }))} className="w-full rounded-lg border-2 border-indigo-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-indigo-400 focus:outline-none" />
+              <textarea rows={2} value={nightCheckIn.nextPlan} onChange={(e) => setNightCheckIn((p) => ({ ...p, nextPlan: e.target.value }))} placeholder="Tomorrow's plan" className="mt-2 w-full rounded-lg border-2 border-indigo-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-indigo-400 focus:outline-none" />
+              <label className="mt-3 flex items-center gap-2 text-sm font-semibold text-indigo-900"><input type="checkbox" checked={nightCheckIn.done} onChange={(e) => setNightCheckIn((p) => ({ ...p, done: e.target.checked }))} className="h-4 w-4 rounded" />Completed</label>
             </div>
           </div>
         </section>
@@ -556,19 +606,29 @@ export const Dashboard = () => {
         <h2 className="mb-2 text-lg font-bold text-slate-900">6. Mind Mapping & Task Visualization</h2>
         <p className="mb-3 text-sm text-slate-600">Visualize task dependencies and priority flows.</p>
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {tasks.map((task) => (
-            <div key={task.id} className="rounded-lg border border-slate-200 p-3">
-              <p className="font-semibold text-slate-900">{task.title}</p>
-              <p className="text-xs text-slate-500">{task.category} | {task.priority} | {task.status}</p>
-              <p className="mt-1 text-xs text-slate-600">{task.dependsOnId ? `Depends on task #${task.dependsOnId}` : 'No dependency'}</p>
-              <div className="mt-2 h-1.5 rounded-full bg-slate-200">
-                <div
-                  className={`h-1.5 rounded-full ${task.priority === 'high' ? 'bg-rose-500' : task.priority === 'medium' ? 'bg-amber-500' : 'bg-emerald-500'}`}
-                  style={{ width: task.status === 'completed' ? '100%' : task.status === 'in-progress' ? '60%' : '25%' }}
-                />
+          {tasks.map((task) => {
+            let cardClass = 'rounded-lg border-2 p-3 ';
+            if (task.priority === 'high') {
+              cardClass += 'border-rose-300 bg-gradient-to-br from-rose-50 to-rose-100';
+            } else if (task.priority === 'medium') {
+              cardClass += 'border-amber-300 bg-gradient-to-br from-amber-50 to-amber-100';
+            } else {
+              cardClass += 'border-emerald-300 bg-gradient-to-br from-emerald-50 to-emerald-100';
+            }
+            return (
+              <div key={task.id} className={cardClass}>
+                <p className="font-bold text-slate-900">{task.title}</p>
+                <div className="mt-2 flex flex-wrap gap-1">
+                  <span className={task.category === 'work' ? 'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-blue-200 text-blue-800' : task.category === 'study' ? 'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-purple-200 text-purple-800' : 'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-pink-200 text-pink-800'}>{task.category}</span>
+                  <span className={task.status === 'completed' ? 'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-emerald-200 text-emerald-800' : task.status === 'in-progress' ? 'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-amber-200 text-amber-800' : 'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-slate-200 text-slate-800'}>{task.status}</span>
+                </div>
+                <p className="mt-2 text-xs text-slate-600">{task.dependsOnId ? `Depends on task #${task.dependsOnId}` : 'No dependency'}</p>
+                <div className="mt-2 h-2 rounded-full bg-slate-200">
+                  <div className={task.priority === 'high' ? 'h-2 rounded-full bg-gradient-to-r from-rose-400 to-rose-500' : task.priority === 'medium' ? 'h-2 rounded-full bg-gradient-to-r from-amber-400 to-amber-500' : 'h-2 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500'} style={{ width: task.status === 'completed' ? '100%' : task.status === 'in-progress' ? '60%' : '25%' }} />
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
     );
@@ -577,11 +637,11 @@ export const Dashboard = () => {
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-slate-100 to-slate-200 p-4 md:p-6">
       <div className="mx-auto max-w-7xl">
-        <header className="mb-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:pl-80">
-          <h1 className="text-2xl font-bold text-slate-900">Tasker Dashboard</h1>
-          <p className="text-sm text-slate-600">Plan smart, stay consistent, and gamify your productivity.</p>
-          <p className="mt-1 text-base font-semibold text-blue-700">Welcome, {displayName}</p>
-          <p className="mt-1 text-xs text-slate-500">{isLoading || isFetching ? 'Syncing tasks...' : `Loaded ${tasks.length} task(s)`}</p>
+        <header className="mb-6 rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 to-cyan-50 p-6 shadow-sm lg:pl-80">
+          <h1 className="text-3xl font-bold text-blue-900">Tasker Dashboard</h1>
+          <p className="text-sm text-blue-700">Plan smart, stay consistent, and gamify your productivity.</p>
+          <p className="mt-2 text-base font-bold text-cyan-700">Welcome, {displayName}</p>
+          <p className="mt-1 text-xs text-blue-600">{isLoading || isFetching ? 'Syncing tasks...' : `Loaded ${tasks.length} task(s)`}</p>
         </header>
 
         <aside className="mb-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm lg:fixed lg:left-6 lg:top-6 lg:z-40 lg:h-[calc(100vh-3rem)] lg:w-72 lg:overflow-y-auto lg:shadow-xl">
@@ -656,7 +716,7 @@ export const Dashboard = () => {
               <p className="text-2xl font-bold text-slate-900">{metrics.pending}</p>
             </div>
             <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <Target className="h-6 w-6 text-blue-600" />
+              <Flame className="h-6 w-6 text-amber-600" />
               <p className="mt-1 text-sm text-slate-600">In Progress</p>
               <p className="text-2xl font-bold text-slate-900">{metrics.inProgress}</p>
             </div>
