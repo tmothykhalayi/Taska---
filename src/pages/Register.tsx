@@ -145,9 +145,29 @@ export function Register() {
           email,
         },
       })
-    } catch (error) {
+    } catch (error: unknown) {
+      let errorMessage = 'Registration failed. Please try again.'
+
+      if (error && typeof error === 'object') {
+        const apiError = error as {
+          status?: number | string
+          data?: { message?: string | string[]; error?: string }
+          error?: string
+        }
+
+        if (apiError.status === 'FETCH_ERROR') {
+          errorMessage = 'Cannot reach backend. Check API URL and server status.'
+        } else if (Array.isArray(apiError.data?.message)) {
+          errorMessage = apiError.data.message.join(', ')
+        } else if (typeof apiError.data?.message === 'string') {
+          errorMessage = apiError.data.message
+        } else if (typeof apiError.error === 'string') {
+          errorMessage = apiError.error
+        }
+      }
+
       dispatch(setError('Registration failed'))
-      setGeneralError('Registration failed. Please try again.')
+      setGeneralError(errorMessage)
     } finally {
       setIsLoading(false)
       dispatch(setLoading(false))
