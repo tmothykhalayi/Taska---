@@ -159,8 +159,8 @@ export function Register() {
       <Header />
 
       {/* Registration Section */}
-      <main className="flex-1 flex items-center justify-center bg-white">
-        <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-0 h-screen lg:h-[calc(100vh-4rem)] overflow-hidden">
+      <main className="flex-1 bg-white overflow-y-auto">
+        <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-0 min-h-screen lg:min-h-[calc(100vh-4rem)]">
           {/* Content Side */}
           <div className="hidden lg:flex lg:items-center lg:justify-center bg-linear-to-br from-blue-600 via-blue-700 to-indigo-700 p-12">
             <motion.div className="space-y-8 text-white max-w-md" initial="initial" animate="animate" variants={fadeInUp}>
@@ -212,7 +212,7 @@ export function Register() {
           </div>
 
           {/* Form Side */}
-          <div className="flex items-center justify-center p-6 lg:p-12 bg-white overflow-y-auto max-h-screen lg:max-h-[calc(100vh-4rem)]">
+          <div className="flex items-center justify-center p-6 lg:p-12 bg-white">
             <motion.div
               className="w-full max-w-md"
               initial="initial"
