@@ -319,50 +319,50 @@ export const Dashboard = () => {
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <div className="rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-emerald-100 p-4">
               <CheckCircle className="h-6 w-6 text-emerald-600" />
-              <p className="mt-2 text-sm text-slate-600">Completion Rate</p>
-              <p className="text-2xl font-bold text-slate-900">{metrics.completionPct}%</p>
+              <p className="mt-2 text-sm text-emerald-700">Completion Rate</p>
+              <p className="text-2xl font-bold text-emerald-900">{metrics.completionPct}%</p>
             </div>
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <div className="rounded-xl border border-rose-200 bg-gradient-to-br from-rose-50 to-rose-100 p-4">
               <Flame className="h-6 w-6 text-rose-600" />
-              <p className="mt-2 text-sm text-slate-600">Current Streak</p>
-              <p className="text-2xl font-bold text-slate-900">{metrics.streak} days</p>
+              <p className="mt-2 text-sm text-rose-700">Current Streak</p>
+              <p className="text-2xl font-bold text-rose-900">{metrics.streak} days</p>
             </div>
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <div className="rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-amber-100 p-4">
               <Trophy className="h-6 w-6 text-amber-600" />
-              <p className="mt-2 text-sm text-slate-600">Reward Points</p>
-              <p className="text-2xl font-bold text-slate-900">{metrics.points}</p>
+              <p className="mt-2 text-sm text-amber-700">Reward Points</p>
+              <p className="text-2xl font-bold text-amber-900">{metrics.points}</p>
             </div>
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <div className="rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100 p-4">
               <Calendar className="h-6 w-6 text-blue-600" />
-              <p className="mt-2 text-sm text-slate-600">Tasks Today</p>
-              <p className="text-2xl font-bold text-slate-900">{metrics.total}</p>
+              <p className="mt-2 text-sm text-blue-700">Tasks Today</p>
+              <p className="text-2xl font-bold text-blue-900">{metrics.total}</p>
             </div>
           </div>
 
           <div className="mt-5 grid gap-4 lg:grid-cols-2">
-            <div className="rounded-xl border border-slate-200 p-4">
-              <p className="mb-3 text-sm font-semibold text-slate-700">Quick Health</p>
-              <div className="space-y-3 text-sm text-slate-700">
-                <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+            <div className="rounded-xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-indigo-100 p-4">
+              <p className="mb-3 text-sm font-semibold text-indigo-900">Quick Health</p>
+              <div className="space-y-3 text-sm font-medium">
+                <div className="flex items-center justify-between rounded-lg bg-indigo-100 px-3 py-2 text-indigo-800">
                   <span>Pending Tasks</span>
-                  <strong>{metrics.pending}</strong>
+                  <strong className="text-indigo-900">{metrics.pending}</strong>
                 </div>
-                <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+                <div className="flex items-center justify-between rounded-lg bg-amber-100 px-3 py-2 text-amber-800">
                   <span>In Progress</span>
-                  <strong>{metrics.inProgress}</strong>
+                  <strong className="text-amber-900">{metrics.inProgress}</strong>
                 </div>
-                <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+                <div className="flex items-center justify-between rounded-lg bg-emerald-100 px-3 py-2 text-emerald-800">
                   <span>Badges Unlocked</span>
-                  <strong>{badges.filter((badge) => badge.unlocked).length}</strong>
+                  <strong className="text-emerald-900">{badges.filter((badge) => badge.unlocked).length}</strong>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-xl border border-slate-200 p-4">
-              <p className="mb-3 text-sm font-semibold text-slate-700">Focus Reminder</p>
-              <div className="rounded-lg bg-blue-50 p-4 text-sm text-blue-900">
+            <div className="rounded-xl border border-cyan-200 bg-gradient-to-br from-cyan-50 to-cyan-100 p-4">
+              <p className="mb-3 text-sm font-semibold text-cyan-900">Focus Reminder</p>
+              <div className="rounded-lg bg-gradient-to-br from-cyan-100 to-blue-100 p-4 text-sm text-cyan-900">
                 <div className="mb-2 inline-flex items-center gap-2 font-medium"><Sparkles className="h-4 w-4" /> Quote of the day</div>
                 <p>"{quoteOfDay()}"</p>
               </div>
@@ -469,14 +469,7 @@ export const Dashboard = () => {
             <div className="h-2 rounded-full bg-emerald-500" style={{ width: `${metrics.completionPct}%` }} />
           </div>
 
-          <div className="mb-5 grid gap-3 md:grid-cols-4">
-            <div className="rounded-lg border border-slate-200 p-3 text-sm">Completed: <strong>{metrics.completed}</strong></div>
-            <div className="rounded-lg border border-slate-200 p-3 text-sm">Pending: <strong>{metrics.pending}</strong></div>
-            <div className="rounded-lg border border-slate-200 p-3 text-sm">In Progress: <strong>{metrics.inProgress}</strong></div>
-            <div className="rounded-lg border border-slate-200 p-3 text-sm">Streak: <strong>{metrics.streak} days</strong></div>
-          </div>
-
-          <p className="mb-2 text-sm font-medium text-slate-700">Weekly Productivity</p>
+          <p className="mb-3 text-sm font-medium text-slate-700">Weekly Productivity</p>
           <div className="grid grid-cols-7 gap-2">
             {weeklyBars.map((bar) => (
               <div key={bar.day} className="text-center">
@@ -609,25 +602,23 @@ export const Dashboard = () => {
                 key={item.id}
                 type="button"
                 onClick={() => setActiveSection(item.id)}
-                className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm transition-all ${
-                  activeSection === item.id ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-50'
+                className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm font-medium transition-all ${
+                  activeSection === item.id ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-100'
                 }`}
               >
                 <span className="font-medium">{item.label}</span>
-                {activeSection === item.id ? <span className="text-blue-600">•</span> : null}
+                {activeSection === item.id ? <span className="text-white font-bold">✓</span> : null}
               </button>
             ))}
           </nav>
 
-          <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <div className="mt-6 rounded-xl border border-teal-200 bg-gradient-to-br from-teal-50 to-teal-100 p-4">
             <div className="mb-2 flex items-center justify-between">
-              <span className="text-sm font-semibold text-slate-700">Dashboard Snapshot</span>
-              <Calendar className="h-4 w-4 text-slate-500" />
+              <span className="text-sm font-semibold text-teal-900">Dashboard Snapshot</span>
+              <Calendar className="h-4 w-4 text-teal-600" />
             </div>
-            <div className="space-y-1 text-xs text-slate-600">
-              <p>Completed: {metrics.completed}</p>
-              <p>Pending: {metrics.pending}</p>
-              <p>Streak: {metrics.streak} days</p>
+            <div className="space-y-1 text-xs text-teal-700">
+              <p className="text-teal-800">Tasks synced and ready</p>
             </div>
           </div>
 

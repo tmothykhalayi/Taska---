@@ -102,7 +102,7 @@ export default function Sidebar({
           x: isOpen ? 0 : -320,
         }}
         transition={{ type: "spring", damping: 30, stiffness: 300 }}
-        className="fixed lg:relative z-50 w-80 h-screen bg-gradient-to-b from-slate-800 to-slate-900 border-r border-slate-700 shadow-xl lg:shadow-none flex flex-col"
+        className="fixed lg:relative z-50 w-80 h-screen bg-linear-to-b from-slate-800 to-slate-900 border-r border-slate-700 shadow-xl lg:shadow-none flex flex-col"
       >
         {/* Header */}
         <div className="p-6 border-b border-slate-700">

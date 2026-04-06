@@ -1460,10 +1460,10 @@ export const AdminDashboard = () => {
         <button onClick={() => setMobileOpen(false)} className="fixed inset-0 z-30 bg-slate-900/50 md:hidden" aria-label="Close admin menu overlay" />
       )}
 
-      <aside className={`fixed md:relative left-0 top-0 z-40 h-screen w-72 border-r border-slate-700 bg-gradient-to-b from-slate-800 to-slate-900 p-6 shadow-xl transition-transform md:translate-x-0 md:shadow-none overflow-y-auto flex flex-col ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <aside className={`fixed md:relative left-0 top-0 z-40 h-screen w-72 border-r border-slate-700 bg-linear-to-b from-slate-800 to-slate-900 p-6 shadow-xl transition-transform md:translate-x-0 md:shadow-none overflow-y-auto flex flex-col ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="mb-8 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-br from-teal-500 to-teal-600 text-white shadow-lg">
               <Shield className="h-5 w-5" />
             </div>
             <div>
@@ -1489,7 +1489,7 @@ export const AdminDashboard = () => {
                 }}
                 className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium transition-all duration-200 ${
                   isActive
-                    ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg'
+                    ? 'bg-slate-700 text-teal-400 shadow-lg'
                     : 'text-slate-300 hover:bg-slate-700 hover:text-white'
                 }`}
               >
@@ -1501,7 +1501,7 @@ export const AdminDashboard = () => {
         </nav>
 
         <div className="mt-auto flex flex-col">
-          <div className="mb-6 h-px bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700" />
+          <div className="mb-6 h-px bg-gradient-to-r from-slate-700 via-slate-700 to-slate-700" />
           <button onClick={handleLogout} className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium text-rose-400 transition-all duration-200 hover:bg-slate-700/50 hover:text-rose-300">
             <LogOut className="h-4 w-4" />
             <span>Logout</span>
