@@ -1,9 +1,15 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Mail, Lock, User, Eye, EyeOff, AlertCircle, Check, X } from 'lucide-react'
+import { Mail, Lock, User, Eye, EyeOff, AlertCircle, Check, X, Phone, Shield } from 'lucide-react'
 import { Header } from '../components/layout/Header'
 import { Footer } from '../components/layout/Footer'
+import { useRegisterUserMutation } from '../features/Auth/RegistrationAPI'
+import { useLoginMutation } from '../features/Auth/LoginApi'
+import { useDispatch } from 'react-redux'
+import type { AppDispatch } from '../app/store'
+import { setUserData, setLoading, setError } from '../features/Auth/UserAuthSlice'
+import type { TUser } from '../types/types'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -38,10 +44,15 @@ const calculatePasswordStrength = (password: string): PasswordStrength => {
 
 export function Register() {
   const navigate = useNavigate()
+  const dispatch = useDispatch<AppDispatch>()
+  const [registerUser] = useRegisterUserMutation()
+  const [loginUser] = useLoginMutation()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [role, setRole] = useState<'tasker' | 'admin'>('tasker')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
@@ -50,6 +61,8 @@ export function Register() {
     email?: string
     password?: string
     confirmPassword?: string
+    phoneNumber?: string
+    role?: string
     terms?: string
   }>({})
   const [isLoading, setIsLoading] = useState(false)
@@ -88,6 +101,14 @@ export function Register() {
       newErrors.confirmPassword = 'Passwords do not match'
     }
 
+    if (!phoneNumber.trim()) {
+      newErrors.phoneNumber = 'Phone number is required'
+    }
+
+    if (!role) {
+      newErrors.role = 'Role is required'
+    }
+
     if (!agreedToTerms) {
       newErrors.terms = 'You must agree to the terms and conditions'
     }
@@ -105,20 +126,44 @@ export function Register() {
     }
 
     setIsLoading(true)
+    dispatch(setLoading(true))
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      const [firstName, ...rest] = fullName.trim().split(/\s+/)
+      const lastName = rest.join(' ')
+      await registerUser({
+        firstName,
+        lastName: lastName || firstName,
+        phoneNumber: phoneNumber.trim(),
+        email,
+        password,
+        role,
+      }).unwrap()
 
-      // For demo, save user and redirect
-      localStorage.setItem('user', JSON.stringify({ fullName, email, id: Date.now() }))
-      localStorage.setItem('token', 'demo-token-' + Date.now())
+      const loginResponse = await loginUser({ email, password }).unwrap()
+
+      const mappedUser = {
+        user_id: loginResponse.user.id,
+        name: `${loginResponse.user.firstName} ${loginResponse.user.lastName}`.trim(),
+        phone: phoneNumber.trim(),
+        email: loginResponse.user.email,
+        password: '',
+        role: loginResponse.user.role,
+        created_at: '',
+        updated_at: '',
+        token: loginResponse.accessToken,
+      } as TUser
+
+      dispatch(setUserData({ user: mappedUser, token: loginResponse.accessToken }))
+      dispatch(setError(null))
 
       navigate('/dashboard/tasker')
     } catch (error) {
+      dispatch(setError('Registration failed'))
       setGeneralError('Registration failed. Please try again.')
     } finally {
       setIsLoading(false)
+      dispatch(setLoading(false))
     }
   }
 
@@ -130,7 +175,7 @@ export function Register() {
       <main className="flex-1 flex items-center justify-center bg-white">
         <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-0 h-screen lg:h-[calc(100vh-4rem)] overflow-hidden">
           {/* Content Side */}
-          <div className="hidden lg:flex lg:items-center lg:justify-center bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 p-12">
+          <div className="hidden lg:flex lg:items-center lg:justify-center bg-linear-to-br from-blue-600 via-blue-700 to-indigo-700 p-12">
             <motion.div className="space-y-8 text-white max-w-md" initial="initial" animate="animate" variants={fadeInUp}>
               {/* Logo/Branding */}
               <motion.div variants={fadeInUp} className="space-y-4">
@@ -201,7 +246,7 @@ export function Register() {
                     variants={fadeInUp}
                     className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-lg"
                   >
-                    <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                    <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
                     <p className="text-sm text-red-700">{generalError}</p>
                   </motion.div>
                 )}
@@ -270,6 +315,69 @@ export function Register() {
                     )}
                   </div>
 
+                  {/* Phone Number Field */}
+                  <div className="space-y-2">
+                    <label htmlFor="phoneNumber" className="block text-sm font-semibold text-slate-900">
+                      Phone Number
+                    </label>
+                    <div className="relative">
+                      <Phone className="absolute left-4 top-3.5 w-5 h-5 text-slate-400 pointer-events-none" />
+                      <input
+                        id="phoneNumber"
+                        type="tel"
+                        value={phoneNumber}
+                        onChange={(e) => {
+                          setPhoneNumber(e.target.value)
+                          setErrors({ ...errors, phoneNumber: undefined })
+                        }}
+                        placeholder="+254700000000"
+                        className={`w-full pl-12 pr-4 py-3 rounded-lg border-2 transition-colors ${
+                          errors.phoneNumber
+                            ? 'border-red-300 bg-red-50'
+                            : 'border-slate-200 bg-white focus:border-blue-500'
+                        } focus:outline-none text-slate-900 placeholder-slate-500`}
+                      />
+                    </div>
+                    {errors.phoneNumber && (
+                      <p className="text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
+                        {errors.phoneNumber}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Role Field */}
+                  <div className="space-y-2">
+                    <label htmlFor="role" className="block text-sm font-semibold text-slate-900">
+                      Role
+                    </label>
+                    <div className="relative">
+                      <Shield className="absolute left-4 top-3.5 w-5 h-5 text-slate-400 pointer-events-none" />
+                      <select
+                        id="role"
+                        value={role}
+                        onChange={(e) => {
+                          setRole(e.target.value as 'tasker' | 'admin')
+                          setErrors({ ...errors, role: undefined })
+                        }}
+                        className={`w-full pl-12 pr-4 py-3 rounded-lg border-2 transition-colors appearance-none ${
+                          errors.role
+                            ? 'border-red-300 bg-red-50'
+                            : 'border-slate-200 bg-white focus:border-blue-500'
+                        } focus:outline-none text-slate-900`}
+                      >
+                        <option value="tasker">Tasker</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                    </div>
+                    {errors.role && (
+                      <p className="text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
+                        {errors.role}
+                      </p>
+                    )}
+                  </div>
+
                   {/* Password Field */}
                   <div className="space-y-2">
                     <label htmlFor="password" className="block text-sm font-semibold text-slate-900">
@@ -314,13 +422,13 @@ export function Register() {
                               key={i}
                               className={`h-1 flex-1 rounded-full transition-all ${
                                 i < passwordStrength.score
-                                  ? `bg-gradient-to-r ${passwordStrength.color}`
+                                  ? `bg-linear-to-r ${passwordStrength.color}`
                                   : 'bg-slate-200'
                               }`}
                             />
                           ))}
                         </div>
-                        <p className={`text-xs font-semibold bg-gradient-to-r ${passwordStrength.color} bg-clip-text text-transparent`}>
+                        <p className={`text-xs font-semibold bg-linear-to-r ${passwordStrength.color} bg-clip-text text-transparent`}>
                           {passwordStrength.label}
                         </p>
                         <ul className="text-xs text-slate-600 space-y-1">
@@ -439,7 +547,7 @@ export function Register() {
                     disabled={isLoading}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full py-3 bg-linear-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {isLoading ? (
                       <>

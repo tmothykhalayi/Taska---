@@ -4,6 +4,11 @@ import { motion } from 'framer-motion'
 import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react'
 import { Header } from '../components/layout/Header'
 import { Footer } from '../components/layout/Footer'
+import { useLoginMutation } from '../features/Auth/LoginApi'
+import { useDispatch } from 'react-redux'
+import type { AppDispatch } from '../app/store'
+import { setUserData, setLoading, setError } from '../features/Auth/UserAuthSlice'
+import type { TUser } from '../types/types'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -13,6 +18,8 @@ const fadeInUp = {
 
 export function Login() {
   const navigate = useNavigate()
+  const dispatch = useDispatch<AppDispatch>()
+  const [loginUser] = useLoginMutation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -48,21 +55,33 @@ export function Login() {
     }
 
     setIsLoading(true)
+    dispatch(setLoading(true))
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      const response = await loginUser({ email, password }).unwrap()
 
-      // For demo, just navigate to dashboard
-      // In real app, this would authenticate against backend
-      localStorage.setItem('user', JSON.stringify({ email, id: Date.now() }))
-      localStorage.setItem('token', 'demo-token-' + Date.now())
+      const mappedUser = {
+        user_id: response.user.id,
+        name: `${response.user.firstName} ${response.user.lastName}`.trim(),
+        phone: '',
+        email: response.user.email,
+        password: '',
+        role: response.user.role,
+        created_at: '',
+        updated_at: '',
+        token: response.accessToken,
+      } as TUser
+
+      dispatch(setUserData({ user: mappedUser, token: response.accessToken }))
+      dispatch(setError(null))
       
       navigate('/dashboard/tasker')
     } catch (error) {
+      dispatch(setError('Login failed'))
       setGeneralError('Login failed. Please try again.')
     } finally {
       setIsLoading(false)
+      dispatch(setLoading(false))
     }
   }
 

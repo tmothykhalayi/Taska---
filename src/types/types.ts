@@ -1,6 +1,7 @@
 export interface RUser {
-  name: string;
-  phone: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
   email: string;
   password: string;
   role: string;
@@ -27,15 +28,15 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  foundUser: {
-    user_id: number;
-    email: string;
-    password: string;
-    role: string;
-  };
   accessToken: string;
   refreshToken: string;
-  isAuthenticated: boolean;
+  user: {
+    id: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: string;
+  };
 }
 
 export type TUser = {

@@ -7,9 +7,9 @@ export const registrationAPI = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL }),
     tagTypes: ['User'],
     endpoints: (builder) => ({
-        registerUser: builder.mutation<RUser, Partial<RUser>>({
+        registerUser: builder.mutation<{ message: string; user: { id: number; email: string; firstName: string; lastName: string; role: string } }, RUser>({
             query: (newUser) => ({
-                url: 'auth/register',
+                url: '/auth/register',
                 method: 'POST',
                 body: newUser,
                 headers: {
@@ -20,5 +20,7 @@ export const registrationAPI = createApi({
         }),
     }),
 });
+
+export const { useRegisterUserMutation } = registrationAPI;
 
 export default registrationAPI;
