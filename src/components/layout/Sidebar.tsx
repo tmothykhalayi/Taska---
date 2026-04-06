@@ -102,25 +102,25 @@ export default function Sidebar({
           x: isOpen ? 0 : -320,
         }}
         transition={{ type: "spring", damping: 30, stiffness: 300 }}
-        className="fixed lg:relative z-50 w-80 h-screen bg-white border-r border-slate-200 shadow-xl lg:shadow-none flex flex-col"
+        className="fixed lg:relative z-50 w-80 h-screen bg-gradient-to-b from-slate-800 to-slate-900 border-r border-slate-700 shadow-xl lg:shadow-none flex flex-col"
       >
         {/* Header */}
-        <div className="p-6 border-b border-slate-200">
+        <div className="p-6 border-b border-slate-700">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
               <div className="bg-linear-to-br from-teal-500 to-teal-600 p-2.5 rounded-xl">
                 <Sparkles className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="font-bold text-slate-800 text-lg">DevSpace</h2>
-                <p className="text-xs text-slate-500">Mental Health Hub</p>
+                <h2 className="font-bold text-white text-lg">DevSpace</h2>
+                <p className="text-xs text-slate-400">Mental Health Hub</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="lg:hidden p-2 hover:bg-slate-100 rounded-lg transition-colors"
+              className="lg:hidden p-2 hover:bg-slate-700 rounded-lg transition-colors"
             >
-              <X className="w-5 h-5 text-slate-600" />
+              <X className="w-5 h-5 text-slate-400" />
             </button>
           </div>
         </div>
@@ -128,8 +128,8 @@ export default function Sidebar({
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto">
           {/* Navigation */}
-          <div className="p-6 border-b border-slate-200">
-            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
+          <div className="p-6 border-b border-slate-700">
+            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
               Navigation
             </h3>
             <nav className="space-y-1">
@@ -139,8 +139,8 @@ export default function Sidebar({
                   onClick={() => handleNavClick(item.id)}
                   className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
                     activeNav === item.id
-                      ? "bg-teal-50 text-teal-700"
-                      : "text-slate-600 hover:bg-slate-50"
+                      ? "bg-slate-700 text-teal-400"
+                      : "text-slate-300 hover:bg-slate-700"
                   }`}
                 >
                   <div className="flex items-center space-x-3">
@@ -148,7 +148,7 @@ export default function Sidebar({
                     <span className="font-medium text-sm">{item.label}</span>
                   </div>
                   {activeNav === item.id && (
-                    <ChevronRight className="w-4 h-4 text-teal-600" />
+                    <ChevronRight className="w-4 h-4 text-teal-400" />
                   )}
                 </button>
               ))}
@@ -157,7 +157,7 @@ export default function Sidebar({
 
           {/* Quick Sessions */}
           <div className="p-6">
-            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
+            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
               Quick Sessions
             </h3>
             <div className="space-y-2">
@@ -168,21 +168,21 @@ export default function Sidebar({
                   className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all text-left group ${
                     currentSession === session.type
                       ? `${session.bgColor} ${session.color}`
-                      : "bg-slate-50 hover:bg-slate-100 text-slate-700"
+                      : "bg-slate-700 hover:bg-slate-700/80 text-slate-300"
                   }`}
                 >
                   <div
                     className={`p-2 rounded-lg ${
                       currentSession === session.type
                         ? session.bgColor
-                        : "bg-white"
+                        : "bg-slate-700"
                     }`}
                   >
                     <session.icon
                       className={`w-4 h-4 ${
                         currentSession === session.type
                           ? session.color
-                          : "text-slate-600"
+                          : "text-slate-400"
                       }`}
                     />
                   </div>
@@ -196,24 +196,24 @@ export default function Sidebar({
           </div>
 
           {/* Burnout Status */}
-          <div className="p-6 border-t mb-4 border-slate-200">
-            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
+          <div className="p-6 border-t mb-4 border-slate-700">
+            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
               Burnout Status
             </h3>
-            <div className="bg-linear-to-br from-green-50 to-teal-50 rounded-xl p-4">
+            <div className="bg-slate-700/50 rounded-xl p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-slate-700">
+                <span className="text-sm font-semibold text-slate-300">
                   Current Level
                 </span>
-                <span className="text-sm font-bold text-teal-600">Low</span>
+                <span className="text-sm font-bold text-teal-400">Low</span>
               </div>
-              <div className="w-full bg-white/50 rounded-full h-2 mb-3">
+              <div className="w-full bg-slate-700 rounded-full h-2 mb-3">
                 <div
                   className="bg-linear-to-r from-green-500 to-teal-500 h-2 rounded-full"
                   style={{ width: "35%" }}
                 />
               </div>
-              <p className="text-xs text-slate-600">
+              <p className="text-xs text-slate-400">
                 Keep up the great work! Your stress levels are well-managed.
               </p>
             </div>
@@ -221,17 +221,17 @@ export default function Sidebar({
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-slate-200 space-y-2">
+        <div className="p-6 border-t border-slate-700 space-y-2">
           <button
             onClick={() => handleNavClick("settings")}
-            className="w-full flex items-center space-x-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all"
+            className="w-full flex items-center space-x-3 px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-xl transition-all"
           >
             <Settings className="w-5 h-5" />
             <span className="font-medium text-sm">Settings</span>
           </button>
           <button
             onClick={() => console.log("Logout")}
-            className="w-full flex items-center space-x-3 px-4 py-3 text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
+            className="w-full flex items-center space-x-3 px-4 py-3 text-rose-400 hover:bg-slate-700 rounded-xl transition-all"
           >
             <LogOut className="w-5 h-5" />
             <span className="font-medium text-sm">Logout</span>
