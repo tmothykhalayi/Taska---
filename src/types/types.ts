@@ -15,6 +15,22 @@ export interface User {
   role: string;
 }
 
+export interface AdminCreateUserPayload {
+  name: string;
+  email: string;
+  password: string;
+  role: 'tasker' | 'admin';
+  status: 'active' | 'inactive';
+}
+
+export interface AdminUpdateUserPayload {
+  name?: string;
+  email?: string;
+  password?: string;
+  role?: 'tasker' | 'admin';
+  status?: 'active' | 'inactive';
+}
+
 export interface Luser {
   password: string;
   role: string;
@@ -57,6 +73,8 @@ export interface TIUser {
   name: string;
   email: string;
   phone: string;
+  role?: string;
+  status?: string;
 }
 
 export interface UserAuthenticatedState {

@@ -1,5 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { TUser,TIUser, User } from '../../types/types';
+import type {
+    AdminCreateUserPayload,
+    AdminUpdateUserPayload,
+    TUser,
+    User,
+} from '../../types/types';
 import { API_BASE_URL } from '../../config/api';
 
 export const usersAPI = createApi({
@@ -26,7 +31,7 @@ export const usersAPI = createApi({
             providesTags: ['getUsers'],
         }),
 
-        createUser: builder.mutation<User, Partial<User>>({
+        createUser: builder.mutation<TUser, AdminCreateUserPayload>({
             query: (newUser) => ({
                 url: '',
                 method: 'POST',
@@ -34,7 +39,7 @@ export const usersAPI = createApi({
             }),
             invalidatesTags: ['getUsers'],
         }),
-        updateUser: builder.mutation<TUser, { id: number; data: Partial<TIUser> }>({
+        updateUser: builder.mutation<TUser, { id: number; data: AdminUpdateUserPayload }>({
             query: ({ id, data }) => ({
                 url: `/${id}`,
                 method: 'PATCH',

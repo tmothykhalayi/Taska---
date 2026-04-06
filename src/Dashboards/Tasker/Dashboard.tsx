@@ -1,3 +1,36 @@
+import { CheckCircle, Calendar, Zap, Star } from 'lucide-react';
+
+export const Dashboard = () => {
+	return (
+		<div className="min-h-screen bg-linear-to-br from-slate-50 via-slate-100 to-slate-200 p-6">
+			<div className="mx-auto max-w-6xl space-y-6">
+				<header className="rounded-2xl bg-white p-6 shadow-sm border border-slate-200">
+					<h1 className="text-2xl font-bold text-slate-900">Tasker Dashboard</h1>
+					<p className="text-sm text-slate-600">Track your tasks, streaks, and rewards</p>
+				</header>
+
+				<div className="grid gap-6 md:grid-cols-3">
+					<div className="rounded-2xl bg-white p-6 shadow-sm border border-slate-200">
+						<CheckCircle className="h-8 w-8 text-blue-600" />
+						<p className="mt-4 text-sm text-slate-600">Active Tasks</p>
+						<p className="text-3xl font-bold text-slate-900">0</p>
+					</div>
+					<div className="rounded-2xl bg-white p-6 shadow-sm border border-slate-200">
+						<Calendar className="h-8 w-8 text-purple-600" />
+						<p className="mt-4 text-sm text-slate-600">Upcoming</p>
+						<p className="text-3xl font-bold text-slate-900">0</p>
+					</div>
+					<div className="rounded-2xl bg-white p-6 shadow-sm border border-slate-200">
+						<Zap className="h-8 w-8 text-amber-600" />
+						<p className="mt-4 text-sm text-slate-600">Streak</p>
+						<p className="text-3xl font-bold text-slate-900">0</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+};
+
 // import { motion } from "framer-motion";
 // import {
 //   CheckCircle,

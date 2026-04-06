@@ -1,16 +1,51 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { API_BASE_URL } from '../../config/api';
 
+export type TaskPriority = 'low' | 'medium' | 'high';
+export type TaskStatus = 'pending' | 'in-progress' | 'completed';
+
+export interface TaskUser {
+  id: number;
+  user_id?: number;
+  name?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+}
+
 export interface Task {
-  id: string;
+  id: number;
   title: string;
   description?: string;
-  priority: 'low' | 'medium' | 'high';
-  status: 'pending' | 'in-progress' | 'completed';
-  dueDate: string;
+  priority: TaskPriority;
+  status: TaskStatus;
+  dueDate?: string | null;
   category?: string;
+  completed?: boolean;
+  user?: TaskUser;
+  userId?: number;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface CreateTaskPayload {
+  title: string;
+  description?: string;
+  priority?: TaskPriority;
+  status?: TaskStatus;
+  category?: string;
+  dueDate?: string;
+  userId: number;
+}
+
+export interface UpdateTaskPayload {
+  title?: string;
+  description?: string;
+  priority?: TaskPriority;
+  status?: TaskStatus;
+  category?: string;
+  dueDate?: string | null;
+  userId?: number;
 }
 
 export const tasksAPI = createApi({
@@ -27,29 +62,25 @@ export const tasksAPI = createApi({
     },
   }),
   tagTypes: ['Tasks'] as const,
-  endpoints: (builder: any) => {
+  endpoints: (builder) => {
     return {
-      // @ts-expect-error - RTK Query strict mode compatibility
       getUserTasks: builder.query<Task[], void>({
         query: () => '',
         providesTags: ['Tasks'],
       }),
       
-      // @ts-expect-error - RTK Query strict mode compatibility
       getAllTasks: builder.query<Task[], void>({
         query: () => '',
         providesTags: ['Tasks'],
       }),
       
-      // @ts-expect-error - RTK Query strict mode compatibility
-      getTask: builder.query<Task, string>({
-        query: (id: string) => `/${id}`,
+      getTask: builder.query<Task, number>({
+        query: (id: number) => `/${id}`,
         providesTags: ['Tasks'],
       }),
       
-      // @ts-expect-error - RTK Query strict mode compatibility
-      createTask: builder.mutation<Task, Partial<Task>>({
-        query: (newTask: Partial<Task>) => ({
+      createTask: builder.mutation<Task, CreateTaskPayload>({
+        query: (newTask: CreateTaskPayload) => ({
           url: '',
           method: 'POST',
           body: newTask,
@@ -57,9 +88,8 @@ export const tasksAPI = createApi({
         invalidatesTags: ['Tasks'],
       }),
       
-      // @ts-expect-error - RTK Query strict mode compatibility
-      updateTask: builder.mutation<Task, { id: string; data: Partial<Task> }>({
-        query: ({ id, data }: { id: string; data: Partial<Task> }) => ({
+      updateTask: builder.mutation<Task, { id: number; data: UpdateTaskPayload }>({
+        query: ({ id, data }: { id: number; data: UpdateTaskPayload }) => ({
           url: `/${id}`,
           method: 'PATCH',
           body: data,
@@ -67,9 +97,8 @@ export const tasksAPI = createApi({
         invalidatesTags: ['Tasks'],
       }),
       
-      // @ts-expect-error - RTK Query strict mode compatibility
-      deleteTask: builder.mutation<{ success: boolean }, string>({
-        query: (id: string) => ({
+      deleteTask: builder.mutation<{ success: boolean }, number>({
+        query: (id: number) => ({
           url: `/${id}`,
           method: 'DELETE',
         }),

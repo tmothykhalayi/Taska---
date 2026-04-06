@@ -74,8 +74,12 @@ export function Login() {
 
       dispatch(setUserData({ user: mappedUser, token: response.accessToken }))
       dispatch(setError(null))
-      
-      navigate('/dashboard/tasker')
+
+      const redirectPath = response.user.role?.toLowerCase() === 'admin'
+        ? '/dashboard/admin'
+        : '/dashboard/tasker'
+
+      navigate(redirectPath, { replace: true })
     } catch (error) {
       dispatch(setError('Login failed'))
       setGeneralError('Login failed. Please try again.')
@@ -93,7 +97,7 @@ export function Login() {
       <main className="flex-1 flex items-center justify-center bg-white">
         <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-0 h-screen lg:h-[calc(100vh-4rem)] overflow-hidden">
           {/* Content Side */}
-          <div className="hidden lg:flex lg:items-center lg:justify-center bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 p-12">
+          <div className="hidden lg:flex lg:items-center lg:justify-center bg-linear-to-br from-blue-600 via-blue-700 to-indigo-700 p-12">
             <motion.div className="space-y-8 text-white max-w-md" initial="initial" animate="animate" variants={fadeInUp}>
               {/* Logo/Branding */}
               <motion.div variants={fadeInUp} className="space-y-4">
@@ -161,7 +165,7 @@ export function Login() {
                     variants={fadeInUp}
                     className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-lg"
                   >
-                    <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                    <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
                     <p className="text-sm text-red-700">{generalError}</p>
                   </motion.div>
                 )}
@@ -258,7 +262,7 @@ export function Login() {
                     disabled={isLoading}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full py-3 bg-linear-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {isLoading ? (
                       <>

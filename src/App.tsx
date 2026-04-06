@@ -8,8 +8,9 @@ import { Locations } from './pages/Locations'
 import { Blog } from './pages/Blog'
 import { Login } from './pages/Login'
 import { Register } from './pages/Register'
-//import { Dashboard as TaskerDashboard } from './Dashboards/Tasker/Dashboard'
-//import { AdminDashboard } from './Dashboards/Admin/Dashboard'
+import ProtectedRoute from './components/layout/ProtectedRoute'
+import { Dashboard as TaskerDashboard } from './Dashboards/Tasker/Dashboard'
+import { AdminDashboard } from './Dashboards/Admin/Dashboard'
 import ErrorBoundary from './components/layout/ErrorBoundary'
 import './App.css'
 
@@ -27,9 +28,22 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             
-            {/* Dashboard Routes - To be implemented */}
-            {/* <Route path="/dashboard/tasker" element={<TaskerDashboard />} /> */}
-            {/* <Route path="/dashboard/admin" element={<AdminDashboard />} /> */}
+            <Route
+              path="/dashboard/tasker"
+              element={
+                <ProtectedRoute>
+                  <TaskerDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </Router>
       </ErrorBoundary>
