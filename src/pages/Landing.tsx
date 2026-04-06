@@ -83,7 +83,7 @@ export function Landing() {
                   Get Started Free
                 </Button>
               </Link>
-              <Link to="/locations">
+              <Link to="/login">
                 <Button
                   variant="ghost"
                   size="lg"

@@ -400,7 +400,7 @@ export function Contact() {
                 Start Free Today
               </button>
             </a>
-            <a href="/locations">
+            <a href="/login">
               <button className="bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-lg font-medium hover:bg-white/20 transition-all duration-200 text-lg border border-white/20">
                 View Dashboard
               </button>
