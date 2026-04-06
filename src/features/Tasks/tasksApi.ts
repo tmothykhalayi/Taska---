@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { API_BASE_URL } from '../../config/api';
 
 export interface Task {
   id: string;
@@ -15,7 +16,7 @@ export interface Task {
 export const tasksAPI = createApi({
   reducerPath: 'tasksAPI',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8000/tasks',
+    baseUrl: `${API_BASE_URL}/tasks`,
     prepareHeaders: (headers: any) => {
       const token = localStorage.getItem('token');
       if (token) {
@@ -30,13 +31,13 @@ export const tasksAPI = createApi({
     return {
       // @ts-expect-error - RTK Query strict mode compatibility
       getUserTasks: builder.query<Task[], void>({
-        query: () => '/user',
+        query: () => '',
         providesTags: ['Tasks'],
       }),
       
       // @ts-expect-error - RTK Query strict mode compatibility
       getAllTasks: builder.query<Task[], void>({
-        query: () => '/all',
+        query: () => '',
         providesTags: ['Tasks'],
       }),
       
@@ -49,7 +50,7 @@ export const tasksAPI = createApi({
       // @ts-expect-error - RTK Query strict mode compatibility
       createTask: builder.mutation<Task, Partial<Task>>({
         query: (newTask: Partial<Task>) => ({
-          url: '/create',
+          url: '',
           method: 'POST',
           body: newTask,
         }),
@@ -60,7 +61,7 @@ export const tasksAPI = createApi({
       updateTask: builder.mutation<Task, { id: string; data: Partial<Task> }>({
         query: ({ id, data }: { id: string; data: Partial<Task> }) => ({
           url: `/${id}`,
-          method: 'PUT',
+          method: 'PATCH',
           body: data,
         }),
         invalidatesTags: ['Tasks'],

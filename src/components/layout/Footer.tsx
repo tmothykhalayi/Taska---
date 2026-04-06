@@ -92,7 +92,7 @@ export function Footer() {
 
         <div className="border-t border-slate-200 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-slate-600">
-            © 2025 <span className="text-slate-900 font-semibold">AutoHub</span>. All rights reserved.
+            © 2026 <span className="text-slate-900 font-semibold">Taska</span>. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="text-xs text-slate-600 hover:text-blue-600 transition-colors">Privacy Policy</a>
