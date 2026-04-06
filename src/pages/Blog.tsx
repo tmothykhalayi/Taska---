@@ -354,7 +354,7 @@ export function Blog() {
       <Header />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 text-white py-16 px-4">
+      <section className="bg-linear-to-br from-blue-600 via-blue-700 to-indigo-700 text-white py-16 px-4">
         <div className="max-w-7xl mx-auto">
           <motion.div
             className="space-y-6"
@@ -422,7 +422,7 @@ export function Blog() {
                     className="h-full flex flex-col overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all group"
                   >
                     {/* Post Header with Icon */}
-                    <div className={`bg-gradient-to-br ${post.color} p-6 text-white flex items-center justify-between`}>
+                    <div className={`bg-linear-to-br ${post.color} p-6 text-white flex items-center justify-between`}>
                       <div className="opacity-90 group-hover:opacity-100 transition-opacity">
                         {post.icon}
                       </div>
@@ -471,7 +471,7 @@ export function Blog() {
       </section>
 
       {/* Quick Tips Section */}
-      <section className="py-16 px-4 bg-gradient-to-b from-slate-50 to-white">
+      <section className="py-16 px-4 bg-linear-to-b from-slate-50 to-white">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial="initial"
@@ -506,7 +506,7 @@ export function Blog() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+      <section className="py-16 px-4 bg-linear-to-r from-blue-600 to-indigo-600 text-white">
         <div className="max-w-2xl mx-auto text-center space-y-6">
           <motion.h2
             className="text-3xl md:text-4xl font-bold"
@@ -554,7 +554,7 @@ export function Blog() {
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className={`bg-gradient-to-br ${selectedPost.color} p-8 text-white sticky top-0 z-10`}>
+            <div className={`bg-linear-to-br ${selectedPost.color} p-8 text-white sticky top-0 z-10`}>
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-3">

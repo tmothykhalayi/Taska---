@@ -186,7 +186,7 @@ export function Locations() {
       <Header />
 
       {/* Motivational Quote Section */}
-      <section className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white py-8 px-4">
+      <section className="bg-linear-to-r from-purple-500 via-pink-500 to-red-500 text-white py-8 px-4">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -300,7 +300,7 @@ export function Locations() {
 
       {/* Urgent Tasks Section */}
       {urgentTasks.length > 0 && (
-        <section className="bg-gradient-to-r from-orange-50 to-red-50 border-t-4 border-orange-400 py-8 px-4">
+        <section className="bg-linear-to-r from-orange-50 to-red-50 border-t-4 border-orange-400 py-8 px-4">
           <div className="max-w-7xl mx-auto">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
               <div className="flex items-center gap-2">
@@ -433,7 +433,7 @@ export function Locations() {
                       </div>
                       {task.status === 'completed' && (
                         <div className="ml-2">
-                          <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0" />
+                          <CheckCircle2 className="w-6 h-6 text-green-600 shrink-0" />
                         </div>
                       )}
                     </div>
