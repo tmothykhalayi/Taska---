@@ -49,6 +49,7 @@ import {
   useUpdateSettingsMutation,
 } from '../../features/Settings/settingsApi';
 import type { AppDispatch, RootState } from '../../app/store';
+import type { TUser } from '../../types/types';
 import { clearUser, setUserDetails } from '../../features/Auth/UserAuthSlice';
 
 const adminNavItems = [
@@ -252,7 +253,7 @@ export const AdminDashboard = () => {
         name,
         email,
         phone,
-      };
+      } as TUser;
 
       dispatch(setUserDetails(updatedLocalUser));
       setMyDetailsForm((prev) => ({ ...prev, newPassword: '' }));
