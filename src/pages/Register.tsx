@@ -5,11 +5,9 @@ import { Mail, Lock, User, Eye, EyeOff, AlertCircle, Check, X, Phone, Shield } f
 import { Header } from '../components/layout/Header'
 import { Footer } from '../components/layout/Footer'
 import { useRegisterUserMutation } from '../features/Auth/RegistrationAPI'
-import { useLoginMutation } from '../features/Auth/LoginApi'
 import { useDispatch } from 'react-redux'
 import type { AppDispatch } from '../app/store'
-import { setUserData, setLoading, setError } from '../features/Auth/UserAuthSlice'
-import type { TUser } from '../types/types'
+import { setLoading, setError } from '../features/Auth/UserAuthSlice'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -46,7 +44,6 @@ export function Register() {
   const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
   const [registerUser] = useRegisterUserMutation()
-  const [loginUser] = useLoginMutation()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -139,25 +136,15 @@ export function Register() {
         password,
         role,
       }).unwrap()
-
-      const loginResponse = await loginUser({ email, password }).unwrap()
-
-      const mappedUser = {
-        user_id: loginResponse.user.id,
-        name: `${loginResponse.user.firstName} ${loginResponse.user.lastName}`.trim(),
-        phone: phoneNumber.trim(),
-        email: loginResponse.user.email,
-        password: '',
-        role: loginResponse.user.role,
-        created_at: '',
-        updated_at: '',
-        token: loginResponse.accessToken,
-      } as TUser
-
-      dispatch(setUserData({ user: mappedUser, token: loginResponse.accessToken }))
       dispatch(setError(null))
 
-      navigate('/dashboard/tasker')
+      navigate('/login', {
+        replace: true,
+        state: {
+          fromRegistration: true,
+          email,
+        },
+      })
     } catch (error) {
       dispatch(setError('Registration failed'))
       setGeneralError('Registration failed. Please try again.')

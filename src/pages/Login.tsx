@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react'
 import { Header } from '../components/layout/Header'
@@ -18,14 +18,17 @@ const fadeInUp = {
 
 export function Login() {
   const navigate = useNavigate()
+  const location = useLocation()
   const dispatch = useDispatch<AppDispatch>()
   const [loginUser] = useLoginMutation()
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState(location.state?.email ?? '')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
   const [isLoading, setIsLoading] = useState(false)
   const [generalError, setGeneralError] = useState('')
+
+  const registrationSuccess = !!location.state?.fromRegistration
 
   const validateForm = () => {
     const newErrors: { email?: string; password?: string } = {}
@@ -167,6 +170,15 @@ export function Login() {
                   >
                     <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
                     <p className="text-sm text-red-700">{generalError}</p>
+                  </motion.div>
+                )}
+
+                {registrationSuccess && (
+                  <motion.div
+                    variants={fadeInUp}
+                    className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg"
+                  >
+                    <p className="text-sm text-green-700">Account created successfully. Please log in.</p>
                   </motion.div>
                 )}
 
