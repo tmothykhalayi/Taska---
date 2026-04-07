@@ -1,5 +1,4 @@
 # Taska - Task Management Application with Gamification
-
 ![React](https://img.shields.io/badge/React-19.2.4-61dafb?logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178c6?logo=typescript&logoColor=white)
 ![React Router](https://img.shields.io/badge/React_Router-7.14.0-CA4245?logo=react-router&logoColor=white)
