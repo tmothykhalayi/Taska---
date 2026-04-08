@@ -17,7 +17,7 @@ export function ResetPassword() {
   const location = useLocation()
   const [resetPassword] = useResetPasswordMutation()
 
-  const [email, setEmail] = useState(location.state?.email || '')
+  const [email] = useState(location.state?.email || '')
   const [otp, setOtp] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
