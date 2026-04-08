@@ -318,22 +318,22 @@ export const Dashboard = () => {
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            <div className="rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-emerald-100 p-4">
+            <div className="rounded-xl border border-emerald-200 bg-linear-to-br from-emerald-50 to-emerald-100 p-4">
               <CheckCircle className="h-6 w-6 text-emerald-600" />
               <p className="mt-2 text-sm text-emerald-700">Completion Rate</p>
               <p className="text-2xl font-bold text-emerald-900">{metrics.completionPct}%</p>
             </div>
-            <div className="rounded-xl border border-rose-200 bg-gradient-to-br from-rose-50 to-rose-100 p-4">
+            <div className="rounded-xl border border-rose-200 bg-linear-to-br from-rose-50 to-rose-100 p-4">
               <Flame className="h-6 w-6 text-rose-600" />
               <p className="mt-2 text-sm text-rose-700">Current Streak</p>
               <p className="text-2xl font-bold text-rose-900">{metrics.streak} days</p>
             </div>
-            <div className="rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-amber-100 p-4">
+            <div className="rounded-xl border border-amber-200 bg-linear-to-br from-amber-50 to-amber-100 p-4">
               <Trophy className="h-6 w-6 text-amber-600" />
               <p className="mt-2 text-sm text-amber-700">Reward Points</p>
               <p className="text-2xl font-bold text-amber-900">{metrics.points}</p>
             </div>
-            <div className="rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100 p-4">
+            <div className="rounded-xl border border-blue-200 bg-linear-to-br from-blue-50 to-blue-100 p-4">
               <Calendar className="h-6 w-6 text-blue-600" />
               <p className="mt-2 text-sm text-blue-700">Tasks Today</p>
               <p className="text-2xl font-bold text-blue-900">{metrics.total}</p>
@@ -341,7 +341,7 @@ export const Dashboard = () => {
           </div>
 
           <div className="mt-5 grid gap-4 lg:grid-cols-2">
-            <div className="rounded-xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-indigo-100 p-4">
+            <div className="rounded-xl border border-indigo-200 bg-linear-to-br from-indigo-50 to-indigo-100 p-4">
               <p className="mb-3 text-sm font-semibold text-indigo-900">Quick Health</p>
               <div className="space-y-3 text-sm font-medium">
                 <div className="flex items-center justify-between rounded-lg bg-indigo-100 px-3 py-2 text-indigo-800">
@@ -359,9 +359,9 @@ export const Dashboard = () => {
               </div>
             </div>
 
-            <div className="rounded-xl border border-cyan-200 bg-gradient-to-br from-cyan-50 to-cyan-100 p-4">
+            <div className="rounded-lg border border-cyan-200 bg-linear-to-br from-cyan-50 to-cyan-100 p-4">
               <p className="mb-3 text-sm font-semibold text-cyan-900">Focus Reminder</p>
-              <div className="rounded-lg bg-gradient-to-br from-cyan-100 to-blue-100 p-4 text-sm text-cyan-900">
+              <div className="rounded-lg bg-linear-to-br from-cyan-100 to-blue-100 p-4 text-sm text-cyan-900">
                 <div className="mb-2 inline-flex items-center gap-2 font-medium"><Sparkles className="h-4 w-4" /> Quote of the day</div>
                 <p>"{quoteOfDay()}"</p>
               </div>
@@ -377,25 +377,25 @@ export const Dashboard = () => {
           <h2 className="mb-4 text-lg font-bold text-slate-900">1. Task Management</h2>
 
           <div className="mb-3 grid gap-2 md:grid-cols-4">
-            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as 'all' | TaskStatus)} className="rounded-lg border-2 border-teal-300 bg-gradient-to-br from-teal-50 to-cyan-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-teal-500 focus:outline-none">
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as 'all' | TaskStatus)} className="rounded-lg border-2 border-teal-300 bg-linear-to-br from-teal-50 to-cyan-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-teal-500 focus:outline-none">
               <option value="all">📋 All Status</option>
               <option value="pending">⏳ Pending</option>
               <option value="in-progress">⚡ In Progress</option>
               <option value="completed">✅ Completed</option>
             </select>
-            <select value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value as 'all' | TaskPriority)} className="rounded-lg border-2 border-rose-300 bg-gradient-to-br from-rose-50 to-red-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-rose-500 focus:outline-none">
+            <select value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value as 'all' | TaskPriority)} className="rounded-lg border-2 border-rose-300 bg-linear-to-br from-rose-50 to-red-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-rose-500 focus:outline-none">
               <option value="all">🎯 All Priority</option>
               <option value="high">🔴 High</option>
               <option value="medium">🟡 Medium</option>
               <option value="low">🟢 Low</option>
             </select>
-            <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value as 'all' | TaskCategory)} className="rounded-lg border-2 border-purple-300 bg-gradient-to-br from-purple-50 to-pink-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-purple-500 focus:outline-none">
+            <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value as 'all' | TaskCategory)} className="rounded-lg border-2 border-purple-300 bg-linear-to-br from-purple-50 to-pink-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-purple-500 focus:outline-none">
               <option value="all">📁 All Categories</option>
               <option value="work">💼 Work</option>
               <option value="study">📚 Study</option>
               <option value="personal">🎨 Personal</option>
             </select>
-            <select value={sortBy} onChange={(e) => setSortBy(e.target.value as SortBy)} className="rounded-lg border-2 border-orange-300 bg-gradient-to-br from-orange-50 to-amber-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-orange-500 focus:outline-none">
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value as SortBy)} className="rounded-lg border-2 border-orange-300 bg-linear-to-br from-orange-50 to-amber-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-orange-500 focus:outline-none">
               <option value="priority">🔼 Sort by Priority</option>
               <option value="status">📊 Sort by Status</option>
               <option value="category">📁 Sort by Category</option>
@@ -407,10 +407,10 @@ export const Dashboard = () => {
             {filteredTasks.map((task) => (
               <div key={task.id} className={`rounded-lg border-2 p-3 ${
                 task.status === 'completed'
-                  ? 'border-emerald-300 bg-gradient-to-r from-emerald-50 to-emerald-100'
+                  ? 'border-emerald-300 bg-linear-to-r from-emerald-50 to-emerald-100'
                   : task.status === 'in-progress'
-                  ? 'border-amber-300 bg-gradient-to-r from-amber-50 to-amber-100'
-                  : 'border-indigo-300 bg-gradient-to-r from-indigo-50 to-indigo-100'
+                  ? 'border-amber-300 bg-linear-to-r from-amber-50 to-amber-100'
+                  : 'border-indigo-300 bg-linear-to-r from-indigo-50 to-indigo-100'
               }`}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
@@ -446,28 +446,28 @@ export const Dashboard = () => {
           </div>
 
           <div className="grid gap-2 md:grid-cols-2">
-            <input value={taskForm.title} onChange={(e) => setTaskForm((p) => ({ ...p, title: e.target.value }))} placeholder="Task title" className="rounded-lg border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-cyan-50 px-3 py-2 text-sm text-slate-900 placeholder-slate-500 focus:border-blue-500 focus:outline-none" />
-            <input value={taskForm.description} onChange={(e) => setTaskForm((p) => ({ ...p, description: e.target.value }))} placeholder="Description" className="rounded-lg border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-cyan-50 px-3 py-2 text-sm text-slate-900 placeholder-slate-500 focus:border-blue-500 focus:outline-none" />
-            <select value={taskForm.priority} onChange={(e) => setTaskForm((p) => ({ ...p, priority: e.target.value as TaskPriority }))} className="rounded-lg border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-orange-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-amber-500 focus:outline-none">
+            <input value={taskForm.title} onChange={(e) => setTaskForm((p) => ({ ...p, title: e.target.value }))} placeholder="Task title" className="rounded-lg border-2 border-blue-300 bg-linear-to-br from-blue-50 to-cyan-50 px-3 py-2 text-sm text-slate-900 placeholder-slate-500 focus:border-blue-500 focus:outline-none" />
+            <input value={taskForm.description} onChange={(e) => setTaskForm((p) => ({ ...p, description: e.target.value }))} placeholder="Description" className="rounded-lg border-2 border-blue-300 bg-linear-to-br from-blue-50 to-cyan-50 px-3 py-2 text-sm text-slate-900 placeholder-slate-500 focus:border-blue-500 focus:outline-none" />
+            <select value={taskForm.priority} onChange={(e) => setTaskForm((p) => ({ ...p, priority: e.target.value as TaskPriority }))} className="rounded-lg border-2 border-amber-300 bg-linear-to-br from-amber-50 to-orange-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-amber-500 focus:outline-none">
               <option value="high">🔴 High</option>
               <option value="medium">🟡 Medium</option>
               <option value="low">🟢 Low</option>
             </select>
-            <select value={taskForm.status} onChange={(e) => setTaskForm((p) => ({ ...p, status: e.target.value as TaskStatus }))} className="rounded-lg border-2 border-indigo-300 bg-gradient-to-br from-indigo-50 to-purple-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:outline-none">
+            <select value={taskForm.status} onChange={(e) => setTaskForm((p) => ({ ...p, status: e.target.value as TaskStatus }))} className="rounded-lg border-2 border-indigo-300 bg-linear-to-br from-indigo-50 to-purple-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:outline-none">
               <option value="pending">⏳ Pending</option>
               <option value="in-progress">⚡ In Progress</option>
               <option value="completed">✅ Completed</option>
             </select>
-            <select value={taskForm.category} onChange={(e) => setTaskForm((p) => ({ ...p, category: e.target.value as TaskCategory }))} className="rounded-lg border-2 border-purple-300 bg-gradient-to-br from-purple-50 to-pink-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-purple-500 focus:outline-none">
+            <select value={taskForm.category} onChange={(e) => setTaskForm((p) => ({ ...p, category: e.target.value as TaskCategory }))} className="rounded-lg border-2 border-purple-300 bg-linear-to-br from-purple-50 to-pink-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:border-purple-500 focus:outline-none">
               {categoryValues.map((category) => <option key={category} value={category}>{category}</option>)}
             </select>
-            <input type="date" value={taskForm.dueDate} onChange={(e) => setTaskForm((p) => ({ ...p, dueDate: e.target.value }))} className="rounded-lg border-2 border-rose-300 bg-gradient-to-br from-rose-50 to-red-50 px-3 py-2 text-sm text-slate-900 focus:border-rose-500 focus:outline-none" />
+            <input type="date" value={taskForm.dueDate} onChange={(e) => setTaskForm((p) => ({ ...p, dueDate: e.target.value }))} className="rounded-lg border-2 border-rose-300 bg-linear-to-br from-rose-50 to-red-50 px-3 py-2 text-sm text-slate-900 focus:border-rose-500 focus:outline-none" />
           </div>
 
           {taskError ? <p className="mt-2 text-sm text-rose-600">{taskError}</p> : null}
 
           <div className="mt-3 flex gap-2">
-            <button type="button" onClick={handleSaveTask} disabled={isCreatingTask || isUpdatingTask} className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2 text-sm font-semibold text-white hover:from-emerald-600 hover:to-teal-700 disabled:opacity-50">
+            <button type="button" onClick={handleSaveTask} disabled={isCreatingTask || isUpdatingTask} className="inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-emerald-500 to-teal-600 px-4 py-2 text-sm font-semibold text-white hover:from-emerald-600 hover:to-teal-700 disabled:opacity-50">
               <Plus className="h-4 w-4" />
               {editingTaskId ? 'Update Task' : 'Create Task'}
             </button>
@@ -487,15 +487,15 @@ export const Dashboard = () => {
           <h2 className="mb-2 text-lg font-bold text-slate-900">2. Progress Tracking & Dashboard Metrics</h2>
           <p className="mb-3 text-sm text-slate-600">Completion rate: {metrics.completionPct}%</p>
           <div className="mb-4 h-3 w-full rounded-full bg-slate-200">
-            <div className="h-3 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500" style={{ width: `${metrics.completionPct}%` }} />
+            <div className="h-3 rounded-full bg-linear-to-r from-emerald-400 to-teal-500" style={{ width: `${metrics.completionPct}%` }} />
           </div>
 
           <p className="mb-3 text-sm font-semibold text-slate-700">Weekly Productivity</p>
           <div className="grid grid-cols-7 gap-2">
             {weeklyBars.map((bar) => (
               <div key={bar.day} className="text-center">
-                <div className="mx-auto flex h-24 w-6 items-end rounded-lg bg-gradient-to-b from-slate-100 to-slate-200">
-                  <div className="w-full rounded-lg bg-gradient-to-t from-blue-500 to-blue-400" style={{ height: `${bar.value}%` }} />
+                <div className="mx-auto flex h-24 w-6 items-end rounded-lg bg-linear-to-b from-slate-100 to-slate-200">
+                  <div className="w-full rounded-lg bg-linear-to-t from-blue-500 to-blue-400" style={{ height: `${bar.value}%` }} />
                 </div>
                 <p className="mt-2 text-xs font-semibold text-slate-600">{bar.day}</p>
               </div>
@@ -511,15 +511,15 @@ export const Dashboard = () => {
           <h2 className="mb-2 text-lg font-bold text-slate-900">3. Gamification & Rewards</h2>
           <p className="text-sm text-slate-600">Earn points, badges, and streak milestones by completing tasks.</p>
           <div className="mt-4 grid gap-3 md:grid-cols-3">
-            <div className="rounded-lg border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-amber-100 p-4">
+            <div className="rounded-lg border-2 border-amber-300 bg-linear-to-br from-amber-50 to-amber-100 p-4">
               <p className="text-sm text-amber-700">Points</p>
               <p className="text-2xl font-bold text-amber-900">{metrics.points}</p>
             </div>
-            <div className="rounded-lg border-2 border-rose-300 bg-gradient-to-br from-rose-50 to-rose-100 p-4">
+            <div className="rounded-lg border-2 border-rose-300 bg-linear-to-br from-rose-50 to-rose-100 p-4">
               <p className="text-sm text-rose-700">Current Streak</p>
               <p className="text-2xl font-bold text-rose-900">{metrics.streak} days</p>
             </div>
-            <div className="rounded-lg border-2 border-cyan-300 bg-gradient-to-br from-cyan-50 to-cyan-100 p-4">
+            <div className="rounded-lg border-2 border-cyan-300 bg-linear-to-br from-cyan-50 to-cyan-100 p-4">
               <p className="text-sm text-cyan-700">Leaderboard</p>
               <p className="text-2xl font-bold text-cyan-900">#2</p>
             </div>
@@ -529,8 +529,8 @@ export const Dashboard = () => {
             {badges.map((badge) => (
               <div key={badge.name} className={`rounded-md border-2 px-4 py-3 ${
                 badge.unlocked
-                  ? 'border-emerald-300 bg-gradient-to-r from-emerald-50 to-emerald-100'
-                  : 'border-slate-300 bg-gradient-to-r from-slate-50 to-slate-100'
+                  ? 'border-emerald-300 bg-linear-to-r from-emerald-50 to-emerald-100'
+                  : 'border-slate-300 bg-linear-to-r from-slate-50 to-slate-100'
               }`}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -561,16 +561,16 @@ export const Dashboard = () => {
       return (
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="mb-2 text-lg font-bold text-slate-900">4. Daily Inspiration & Motivation</h2>
-          <div className="rounded-lg border-2 border-purple-300 bg-gradient-to-br from-purple-50 to-purple-100 p-4">
+          <div className="rounded-lg border-2 border-purple-300 bg-linear-to-br from-purple-50 to-purple-100 p-4">
             <div className="mb-2 inline-flex items-center gap-2 font-bold text-purple-900"><Sparkles className="h-5 w-5 text-purple-600" /> Quote of the day</div>
             <p className="text-sm text-purple-800">"{quoteOfDay()}"</p>
           </div>
           <div className="mt-3 grid gap-3 md:grid-cols-2">
-            <div className="rounded-lg border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-amber-100 p-4">
+            <div className="rounded-lg border-2 border-amber-300 bg-linear-to-br from-amber-50 to-amber-100 p-4">
               <div className="mb-2 inline-flex items-center gap-2 font-bold text-amber-900"><Sunrise className="h-5 w-5 text-amber-600" /> Morning Prompt</div>
               <p className="text-sm text-amber-800">Start with your hardest task for 45 focused minutes.</p>
             </div>
-            <div className="rounded-lg border-2 border-indigo-300 bg-gradient-to-br from-indigo-50 to-indigo-100 p-4">
+            <div className="rounded-lg border-2 border-indigo-300 bg-linear-to-br from-indigo-50 to-indigo-100 p-4">
               <div className="mb-2 inline-flex items-center gap-2 font-bold text-indigo-900"><Moon className="h-5 w-5 text-indigo-600" /> Evening Reflection</div>
               <p className="text-sm text-indigo-800">Capture one win and one improvement for tomorrow.</p>
             </div>
@@ -584,13 +584,13 @@ export const Dashboard = () => {
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="mb-2 text-lg font-bold text-slate-900">5. Morning & Night Check-ins</h2>
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-lg border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-amber-100 p-4">
+            <div className="rounded-lg border-2 border-amber-300 bg-linear-to-br from-amber-50 to-amber-100 p-4">
               <div className="mb-3 inline-flex items-center gap-2 font-bold text-amber-900"><Sunrise className="h-5 w-5 text-amber-600" /> Morning Check-in</div>
               <textarea rows={3} value={morningCheckIn.intentions} onChange={(e) => setMorningCheckIn((p) => ({ ...p, intentions: e.target.value }))} className="w-full rounded-lg border-2 border-amber-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-amber-400 focus:outline-none" />
               <input value={morningCheckIn.topPriority} onChange={(e) => setMorningCheckIn((p) => ({ ...p, topPriority: e.target.value }))} placeholder="Top priority" className="mt-2 w-full rounded-lg border-2 border-amber-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-amber-400 focus:outline-none" />
               <label className="mt-3 flex items-center gap-2 text-sm font-semibold text-amber-900"><input type="checkbox" checked={morningCheckIn.done} onChange={(e) => setMorningCheckIn((p) => ({ ...p, done: e.target.checked }))} className="h-4 w-4 rounded" />Completed</label>
             </div>
-            <div className="rounded-lg border-2 border-indigo-300 bg-gradient-to-br from-indigo-50 to-indigo-100 p-4">
+            <div className="rounded-lg border-2 border-indigo-300 bg-linear-to-br from-indigo-50 to-indigo-100 p-4">
               <div className="mb-3 inline-flex items-center gap-2 font-bold text-indigo-900"><Moon className="h-5 w-5 text-indigo-600" /> Night Check-in</div>
               <textarea rows={3} value={nightCheckIn.reflection} onChange={(e) => setNightCheckIn((p) => ({ ...p, reflection: e.target.value }))} className="w-full rounded-lg border-2 border-indigo-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-indigo-400 focus:outline-none" />
               <textarea rows={2} value={nightCheckIn.nextPlan} onChange={(e) => setNightCheckIn((p) => ({ ...p, nextPlan: e.target.value }))} placeholder="Tomorrow's plan" className="mt-2 w-full rounded-lg border-2 border-indigo-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-indigo-400 focus:outline-none" />
@@ -609,11 +609,11 @@ export const Dashboard = () => {
           {tasks.map((task) => {
             let cardClass = 'rounded-lg border-2 p-3 ';
             if (task.priority === 'high') {
-              cardClass += 'border-rose-300 bg-gradient-to-br from-rose-50 to-rose-100';
+              cardClass += 'border-rose-300 bg-linear-to-br from-rose-50 to-rose-100';
             } else if (task.priority === 'medium') {
-              cardClass += 'border-amber-300 bg-gradient-to-br from-amber-50 to-amber-100';
+              cardClass += 'border-amber-300 bg-linear-to-br from-amber-50 to-amber-100';
             } else {
-              cardClass += 'border-emerald-300 bg-gradient-to-br from-emerald-50 to-emerald-100';
+              cardClass += 'border-emerald-300 bg-linear-to-br from-emerald-50 to-emerald-100';
             }
             return (
               <div key={task.id} className={cardClass}>
@@ -624,7 +624,7 @@ export const Dashboard = () => {
                 </div>
                 <p className="mt-2 text-xs text-slate-600">{task.dependsOnId ? `Depends on task #${task.dependsOnId}` : 'No dependency'}</p>
                 <div className="mt-2 h-2 rounded-full bg-slate-200">
-                  <div className={task.priority === 'high' ? 'h-2 rounded-full bg-gradient-to-r from-rose-400 to-rose-500' : task.priority === 'medium' ? 'h-2 rounded-full bg-gradient-to-r from-amber-400 to-amber-500' : 'h-2 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500'} style={{ width: task.status === 'completed' ? '100%' : task.status === 'in-progress' ? '60%' : '25%' }} />
+                  <div className={task.priority === 'high' ? 'h-2 rounded-full bg-linear-to-r from-rose-400 to-rose-500' : task.priority === 'medium' ? 'h-2 rounded-full bg-linear-to-r from-amber-400 to-amber-500' : 'h-2 rounded-full bg-linear-to-r from-emerald-400 to-emerald-500'} style={{ width: task.status === 'completed' ? '100%' : task.status === 'in-progress' ? '60%' : '25%' }} />
                 </div>
               </div>
             );
@@ -637,7 +637,7 @@ export const Dashboard = () => {
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-slate-100 to-slate-200 p-4 md:p-6">
       <div className="mx-auto max-w-7xl">
-        <header className="mb-6 rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 to-cyan-50 p-6 shadow-sm lg:pl-80">
+        <header className="mb-6 rounded-2xl border border-blue-200 bg-linear-to-r from-blue-50 to-cyan-50 p-6 shadow-sm lg:pl-80">
           <h1 className="text-3xl font-bold text-blue-900">Tasker Dashboard</h1>
           <p className="text-sm text-blue-700">Plan smart, stay consistent, and gamify your productivity.</p>
           <p className="mt-2 text-base font-bold text-cyan-700">Welcome, {displayName}</p>
@@ -663,7 +663,7 @@ export const Dashboard = () => {
                 type="button"
                 onClick={() => setActiveSection(item.id)}
                 className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm font-medium transition-all ${
-                  activeSection === item.id ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-100'
+                  activeSection === item.id ? 'bg-linear-to-r from-blue-500 to-blue-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-100'
                 }`}
               >
                 <span className="font-medium">{item.label}</span>
@@ -672,7 +672,7 @@ export const Dashboard = () => {
             ))}
           </nav>
 
-          <div className="mt-6 rounded-xl border border-teal-200 bg-gradient-to-br from-teal-50 to-teal-100 p-4">
+          <div className="mt-6 rounded-xl border border-teal-200 bg-linear-to-br from-teal-50 to-teal-100 p-4">
             <div className="mb-2 flex items-center justify-between">
               <span className="text-sm font-semibold text-teal-900">Dashboard Snapshot</span>
               <Calendar className="h-4 w-4 text-teal-600" />

@@ -1501,7 +1501,7 @@ export const AdminDashboard = () => {
         </nav>
 
         <div className="mt-auto flex flex-col">
-          <div className="mb-6 h-px bg-gradient-to-r from-slate-700 via-slate-700 to-slate-700" />
+          <div className="mb-6 h-px bg-linear-to-r from-slate-700 via-slate-700 to-slate-700" />
           <button onClick={handleLogout} className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium text-rose-400 transition-all duration-200 hover:bg-slate-700/50 hover:text-rose-300">
             <LogOut className="h-4 w-4" />
             <span>Logout</span>
