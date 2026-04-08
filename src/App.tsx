@@ -8,6 +8,8 @@ import { Locations } from './pages/Locations'
 import { Blog } from './pages/Blog'
 import { Login } from './pages/Login'
 import { Register } from './pages/Register'
+import { ForgotPassword } from './pages/ForgotPassword'
+import { ResetPassword } from './pages/ResetPassword'
 import ProtectedRoute from './components/layout/ProtectedRoute'
 import { Dashboard as TaskerDashboard } from './Dashboards/Tasker/Dashboard'
 import { AdminDashboard } from './Dashboards/Admin/Dashboard'
@@ -27,6 +29,8 @@ function App() {
             <Route path="/locations" element={<Locations />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             
             <Route
               path="/dashboard/tasker"

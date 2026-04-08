@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from '@reduxjs/toolkit/query'
 import { loginApi } from "../features/Auth/LoginApi";
 import { registrationAPI } from "../features/Auth/RegistrationAPI";
+import { passwordResetApi } from "../features/Auth/PasswordResetApi";
 import { usersAPI } from "../features/Users/usersApi";
 import { tasksAPI } from "../features/Tasks/tasksApi";
 import { settingsAPI } from "../features/Settings/settingsApi";
@@ -16,6 +17,7 @@ const store = configureStore({
     // API reducers
     [loginApi.reducerPath]: loginApi.reducer,
     [registrationAPI.reducerPath]: registrationAPI.reducer,
+    [passwordResetApi.reducerPath]: passwordResetApi.reducer,
     [usersAPI.reducerPath]: usersAPI.reducer,
     [tasksAPI.reducerPath]: tasksAPI.reducer,
     [settingsAPI.reducerPath]: settingsAPI.reducer,
@@ -29,6 +31,7 @@ const store = configureStore({
       usersAPI.middleware,
       loginApi.middleware,
       registrationAPI.middleware,
+      passwordResetApi.middleware,
       tasksAPI.middleware,
       settingsAPI.middleware,
     ),
