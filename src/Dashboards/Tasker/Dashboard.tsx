@@ -8,6 +8,7 @@ import {
   ListTodo,
   Moon,
   Plus,
+  Settings,
   Sparkles,
   Sunrise,
   Trash2,
@@ -24,10 +25,11 @@ import {
   useGetUserTasksQuery,
   useUpdateTaskMutation,
 } from '../../features/Tasks/tasksApi';
+import { useUpdateUserMutation } from '../../features/Users/usersApi';
 
 type TaskCategory = 'work' | 'study' | 'personal';
 type SortBy = 'priority' | 'status' | 'category' | 'dueDate';
-type DashboardSection = 'overview' | 'tasks' | 'progress' | 'rewards' | 'inspiration' | 'checkins' | 'mindmap';
+type DashboardSection = 'overview' | 'tasks' | 'progress' | 'rewards' | 'inspiration' | 'checkins' | 'mindmap' | 'settings';
 
 type TaskItem = {
   id: number;
@@ -51,6 +53,7 @@ const sectionItems: Array<{ id: DashboardSection; label: string }> = [
   { id: 'inspiration', label: 'Daily Inspiration' },
   { id: 'checkins', label: 'Check-ins' },
   { id: 'mindmap', label: 'Mind Mapping' },
+  { id: 'settings', label: 'Settings & Profile' },
 ];
 
 const priorityRank: Record<TaskPriority, number> = { high: 3, medium: 2, low: 1 };
@@ -155,6 +158,16 @@ export const Dashboard = () => {
     nextPlan: 'Start with one high-priority task at 8:00 AM.',
     done: false,
   });
+
+  const [userForm, setUserForm] = useState({
+    name: displayName,
+    email: user?.email || '',
+    phone: user?.phone || '',
+  });
+  const [updateSuccess, setUpdateSuccess] = useState('');
+  const [updateError, setUpdateError] = useState('');
+
+  const [updateUser, { isLoading: isUpdatingUser }] = useUpdateUserMutation();
 
   const { data: apiTasks = [], isLoading, isFetching } = useGetUserTasksQuery(currentUserId);
   const [createTask, { isLoading: isCreatingTask }] = useCreateTaskMutation();
@@ -299,6 +312,25 @@ export const Dashboard = () => {
       await updateTask({ id: task.id, data: { status: nextStatus } }).unwrap();
     } catch (error: any) {
       setTaskError(error?.data?.message || 'Failed to update task status.');
+    }
+  };
+
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setUpdateError('');
+    setUpdateSuccess('');
+
+    try {
+      await updateUser({
+        id: currentUserId,
+        data: {
+          name: userForm.name,
+        },
+      }).unwrap();
+      setUpdateSuccess('Profile updated successfully!');
+      setTimeout(() => setUpdateSuccess(''), 3000);
+    } catch (error: any) {
+      setUpdateError(error?.data?.message || 'Failed to update profile.');
     }
   };
 
@@ -601,6 +633,117 @@ export const Dashboard = () => {
       );
     }
 
+    if (activeSection === 'settings') {
+      return (
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="mb-6 flex items-center gap-3">
+            <Settings className="h-6 w-6 text-slate-700" />
+            <h2 className="text-lg font-bold text-slate-900">Settings & Profile</h2>
+          </div>
+
+          {updateSuccess && (
+            <div className="mb-4 rounded-lg bg-emerald-50 p-4 text-sm text-emerald-700">
+              ✓ {updateSuccess}
+            </div>
+          )}
+          {updateError && (
+            <div className="mb-4 rounded-lg bg-rose-50 p-4 text-sm text-rose-700">
+              ✗ {updateError}
+            </div>
+          )}
+
+          <form onSubmit={handleUpdateProfile} className="space-y-6">
+            {/* Profile Section */}
+            <div className="border-b border-slate-200 pb-6">
+              <h3 className="mb-4 font-semibold text-slate-900">Personal Information</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    value={userForm.name}
+                    onChange={(e) => setUserForm({ ...userForm, name: e.target.value })}
+                    className="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none"
+                    placeholder="Enter your full name"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+                  <input
+                    type="email"
+                    value={userForm.email}
+                    disabled
+                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2 text-sm text-slate-500 cursor-not-allowed"
+                  />
+                  <p className="mt-1 text-xs text-slate-500">Email cannot be changed</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Role</label>
+                  <input
+                    type="text"
+                    value={user?.role || 'tasker'}
+                    disabled
+                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2 text-sm text-slate-500 cursor-not-allowed"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Account Status</label>
+                  <div className="flex items-center gap-2">
+                    <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+                      user?.status === 'active' 
+                        ? 'bg-emerald-100 text-emerald-700' 
+                        : 'bg-amber-100 text-amber-700'
+                    }`}>
+                      {user?.status === 'active' ? '✓ Active' : '⏳ Inactive'}
+                    </span>
+                  </div>
+                  {user?.status !== 'active' && (
+                    <p className="mt-2 text-xs text-amber-600">Your account is inactive. Contact an administrator to activate it.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Account Stats */}
+            <div className="border-b border-slate-200 pb-6">
+              <h3 className="mb-4 font-semibold text-slate-900">Account Statistics</h3>
+              <div className="grid gap-3 md:grid-cols-2">
+                <div className="rounded-lg bg-blue-50 p-4">
+                  <p className="text-xs font-semibold uppercase text-blue-700">Tasks Assigned</p>
+                  <p className="mt-1 text-xl font-bold text-blue-900">{metrics.total}</p>
+                </div>
+                <div className="rounded-lg bg-emerald-50 p-4">
+                  <p className="text-xs font-semibold uppercase text-emerald-700">Completed</p>
+                  <p className="mt-1 text-xl font-bold text-emerald-900">{metrics.completed}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3">
+              <button
+                type="submit"
+                disabled={isUpdatingUser}
+                className="flex-1 rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:bg-slate-400"
+              >
+                {isUpdatingUser ? 'Saving...' : 'Save Changes'}
+              </button>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex-1 rounded-lg border border-slate-300 px-6 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              >
+                Logout
+              </button>
+            </div>
+          </form>
+        </section>
+      );
+    }
+
     return (
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="mb-2 text-lg font-bold text-slate-900">6. Mind Mapping & Task Visualization</h2>
@@ -691,15 +834,6 @@ export const Dashboard = () => {
               <div className="h-2 rounded-full bg-linear-to-r from-emerald-500 to-teal-500" style={{ width: '35%' }} />
             </div>
             <p className="mt-3 text-xs text-slate-600">Keep up the great work! Your stress levels are well-managed.</p>
-          </div>
-
-          <div className="mt-4 space-y-2 border-t border-slate-200 pt-4">
-            <button type="button" className="w-full rounded-xl px-4 py-3 text-left text-sm font-medium text-slate-600 hover:bg-slate-50">
-              Settings
-            </button>
-            <button type="button" onClick={handleLogout} className="w-full rounded-xl px-4 py-3 text-left text-sm font-medium text-rose-600 hover:bg-rose-50">
-              Logout
-            </button>
           </div>
         </aside>
 

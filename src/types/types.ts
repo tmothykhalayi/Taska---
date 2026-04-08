@@ -63,6 +63,7 @@ export type TUser = {
   password: string;
   hashedRefreshToken?: string;
   role: string;
+  status?: string;
   created_at: string;
   updated_at: string;
   token?: string;
@@ -84,6 +85,7 @@ export interface UserAuthenticatedState {
         email: string
         phone: string
         role: string
+        status?: string
     } | null
     token: string | null
     isAuthenticated: boolean
