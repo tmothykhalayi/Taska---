@@ -374,7 +374,6 @@ export function Register() {
                         } focus:outline-none text-slate-900`}
                       >
                         <option value="tasker">Tasker</option>
-                        <option value="admin">Admin</option>
                       </select>
                     </div>
                     {errors.role && (
