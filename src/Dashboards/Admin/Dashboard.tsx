@@ -461,7 +461,10 @@ export const AdminDashboard = () => {
 
   const filteredAndSortedTasks = useMemo(() => {
     const query = taskSearch.trim().toLowerCase();
+    const currentUserId = Number(user?.user_id ?? 0);
     const result = normalizedTasks.filter((task) => {
+      // Only show tasks assigned to the current user
+      const matchesUser = task.assignedUserId === currentUserId;
       const matchesSearch =
         query.length === 0 ||
         task.title.toLowerCase().includes(query) ||
@@ -471,7 +474,7 @@ export const AdminDashboard = () => {
         taskStatusFilters.length === 0 || taskStatusFilters.includes(task.status);
       const matchesPriority =
         taskPriorityFilters.length === 0 || taskPriorityFilters.includes(task.priority);
-      return matchesSearch && matchesStatus && matchesPriority;
+      return matchesUser && matchesSearch && matchesStatus && matchesPriority;
     });
 
     result.sort((a, b) => {
@@ -487,7 +490,7 @@ export const AdminDashboard = () => {
     });
 
     return result;
-  }, [normalizedTasks, taskPriorityFilters, taskSearch, taskSortBy, taskSortOrder, taskStatusFilters]);
+  }, [normalizedTasks, taskPriorityFilters, taskSearch, taskSortBy, taskSortOrder, taskStatusFilters, user]);
 
   const totalTaskPages = Math.max(1, Math.ceil(filteredAndSortedTasks.length / tablePageSize));
   const paginatedTasks = useMemo(() => {

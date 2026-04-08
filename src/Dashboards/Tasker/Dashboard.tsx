@@ -156,7 +156,7 @@ export const Dashboard = () => {
     done: false,
   });
 
-  const { data: apiTasks = [], isLoading, isFetching } = useGetUserTasksQuery();
+  const { data: apiTasks = [], isLoading, isFetching } = useGetUserTasksQuery(currentUserId);
   const [createTask, { isLoading: isCreatingTask }] = useCreateTaskMutation();
   const [updateTask, { isLoading: isUpdatingTask }] = useUpdateTaskMutation();
   const [deleteTask] = useDeleteTaskMutation();

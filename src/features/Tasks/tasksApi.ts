@@ -64,8 +64,18 @@ export const tasksAPI = createApi({
   tagTypes: ['Tasks'] as const,
   endpoints: (builder) => {
     return {
-      getUserTasks: builder.query<Task[], void>({
-        query: () => '',
+      getUserTasks: builder.query<Task[], number>({
+        query: (userId: number) => `/user/${userId}`,
+        providesTags: ['Tasks'],
+      }),
+      
+      getUserPersonalTasks: builder.query<Task[], number>({
+        query: (userId: number) => `/user/${userId}/personal`,
+        providesTags: ['Tasks'],
+      }),
+      
+      getAllGlobalTasks: builder.query<Task[], void>({
+        query: () => '/global/all',
         providesTags: ['Tasks'],
       }),
       
@@ -110,6 +120,8 @@ export const tasksAPI = createApi({
 
 export const {
   useGetUserTasksQuery,
+  useGetUserPersonalTasksQuery,
+  useGetAllGlobalTasksQuery,
   useGetAllTasksQuery,
   useGetTaskQuery,
   useCreateTaskMutation,
