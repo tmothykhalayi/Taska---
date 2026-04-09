@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
+import { AlertCircle, ArrowLeft } from 'lucide-react'
 import { Header } from '../components/layout/Header'
 import { Footer } from '../components/layout/Footer'
 import { OtpInput } from '../components/ui/OtpInput'
