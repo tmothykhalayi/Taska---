@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { Lock, Eye, EyeOff, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
 import { Header } from '../components/layout/Header'
 import { Footer } from '../components/layout/Footer'
+import { OtpInput } from '../components/ui/OtpInput'
 import { useResetPasswordMutation } from '../features/Auth/PasswordResetApi'
 
 const fadeInUp = {
@@ -39,8 +40,8 @@ export function ResetPassword() {
 
     if (!otp) {
       newErrors.otp = 'Reset code is required'
-    } else if (otp.length < 4) {
-      newErrors.otp = 'Reset code must be at least 4 characters'
+    } else if (otp.length !== 6) {
+      newErrors.otp = 'Reset code must be 6 digits'
     }
 
     if (!password) {
@@ -162,33 +163,16 @@ export function ResetPassword() {
             {/* Form */}
             {!submitted && (
               <motion.form onSubmit={handleSubmit} className="space-y-6" variants={fadeInUp}>
-                {/* OTP Field */}
-                <div className="space-y-2">
-                  <label htmlFor="otp" className="block text-sm font-semibold text-slate-900">
-                    Reset Code
-                  </label>
-                  <input
-                    id="otp"
-                    type="text"
-                    value={otp}
-                    onChange={(e) => {
-                      setOtp(e.target.value.toUpperCase())
-                      setErrors({ ...errors, otp: undefined })
-                    }}
-                    placeholder="Enter code from email"
-                    className={`w-full px-4 py-3 rounded-lg border-2 transition-colors font-mono text-center text-lg tracking-widest ${
-                      errors.otp
-                        ? 'border-red-300 bg-red-50'
-                        : 'border-slate-200 bg-white focus:border-blue-500'
-                    } focus:outline-none text-slate-900 placeholder-slate-500`}
-                  />
-                  {errors.otp && (
-                    <p className="text-sm text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-4 h-4" />
-                      {errors.otp}
-                    </p>
-                  )}
-                </div>
+                {/* OTP Field with Boxes */}
+                <OtpInput
+                  value={otp}
+                  onChange={(value) => {
+                    setOtp(value)
+                    setErrors({ ...errors, otp: undefined })
+                  }}
+                  error={errors.otp}
+                  length={6}
+                />
 
                 {/* Password Field */}
                 <div className="space-y-2">
