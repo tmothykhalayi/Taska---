@@ -4,7 +4,6 @@ import { motion } from 'framer-motion'
 import { Lock, Eye, EyeOff, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
 import { Header } from '../components/layout/Header'
 import { Footer } from '../components/layout/Footer'
-import { OtpInput } from '../components/ui/OtpInput'
 import { useResetPasswordMutation } from '../features/Auth/PasswordResetApi'
 
 const fadeInUp = {
@@ -19,30 +18,25 @@ export function ResetPassword() {
   const [resetPassword] = useResetPasswordMutation()
 
   const [email] = useState(location.state?.email || '')
-  const [otp, setOtp] = useState('')
+  const [otp] = useState(location.state?.otp || '')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [errors, setErrors] = useState<{ otp?: string; password?: string; confirmPassword?: string }>({})
+  const [errors, setErrors] = useState<{ password?: string; confirmPassword?: string }>({})
   const [isLoading, setIsLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [generalError, setGeneralError] = useState('')
 
   useEffect(() => {
-    if (!email) {
+    // Redirect if OTP not verified or email missing
+    if (!email || !otp) {
       navigate('/forgot-password')
     }
-  }, [email, navigate])
+  }, [email, otp, navigate])
 
   const validateForm = () => {
-    const newErrors: { otp?: string; password?: string; confirmPassword?: string } = {}
-
-    if (!otp) {
-      newErrors.otp = 'Reset code is required'
-    } else if (otp.length !== 6) {
-      newErrors.otp = 'Reset code must be 6 digits'
-    }
+    const newErrors: { password?: string; confirmPassword?: string } = {}
 
     if (!password) {
       newErrors.password = 'Password is required'
@@ -121,7 +115,7 @@ export function ResetPassword() {
           <div className="bg-white rounded-xl shadow-lg p-8 space-y-8">
             {/* Back Button */}
             <motion.button
-              onClick={() => navigate('/forgot-password')}
+              onClick={() => navigate('/verify-otp', { state: { email } })}
               className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors text-sm font-semibold"
               whileHover={{ x: -4 }}
             >
@@ -132,7 +126,7 @@ export function ResetPassword() {
             {/* Header */}
             <motion.div variants={fadeInUp} className="text-center space-y-2">
               <h1 className="text-3xl font-bold text-slate-900">Create New Password</h1>
-              <p className="text-slate-600">Reset your account password securely</p>
+              <p className="text-slate-600">Set a new password for your account</p>
             </motion.div>
 
             {/* Success Message */}
@@ -163,16 +157,6 @@ export function ResetPassword() {
             {/* Form */}
             {!submitted && (
               <motion.form onSubmit={handleSubmit} className="space-y-6" variants={fadeInUp}>
-                {/* OTP Field with Boxes */}
-                <OtpInput
-                  value={otp}
-                  onChange={(value) => {
-                    setOtp(value)
-                    setErrors({ ...errors, otp: undefined })
-                  }}
-                  error={errors.otp}
-                  length={6}
-                />
 
                 {/* Password Field */}
                 <div className="space-y-2">

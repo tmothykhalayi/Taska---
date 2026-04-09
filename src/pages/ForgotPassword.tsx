@@ -46,9 +46,9 @@ export function ForgotPassword() {
     try {
       await forgotPassword({ email }).unwrap()
       setSubmitted(true)
-      // Redirect to reset password page after 2 seconds
+      // Redirect to OTP verification page after 2 seconds
       setTimeout(() => {
-        navigate('/reset-password', { state: { email } })
+        navigate('/verify-otp', { state: { email } })
       }, 2000)
     } catch (error: any) {
       setGeneralError(error?.data?.message || 'Failed to send reset email. Please try again.')
